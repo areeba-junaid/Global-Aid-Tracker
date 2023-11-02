@@ -13,16 +13,18 @@ function Slides() {
       className="relative bg-green-50  "
       style={{ width: "100%", height: "500px" }}
     >
-      {/* Adjust the width and height above to match your div */}
       <Carousel
         className="w-full h-full relative top-0 z-0 border border-solid "
+        isRTL={false}
+        pagination={true}
+        tiltEasing={"ease"}
+        verticalMode={false}
         itemsToShow={1}
-        isInfinite={true}
         enableAutoPlay={true}
         autoPlaySpeed={5000} // Adjust the auto-play speed (e.g., 5000ms = 5 seconds)
       >
         {images.map((image, index) => (
-          <div key={index} className="carousel-item">
+          <div key={index}>
             <img src={image} alt={`Image ${index + 1}`} />
           </div>
         ))}

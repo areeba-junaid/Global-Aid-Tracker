@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Authenticate from "./pages/Authentication/Authenticate";
 import HomePage from "./pages/Home/HomePage";
 import UserList from "./pages/UserList/UserList";
@@ -8,10 +8,12 @@ import Profile from "./pages/Profile/Profile";
 import History from "./pages/History/History";
 import Menu from "./component/Menu";
 
+import { EthereumProvider } from "./ContextAPI/EthereumContext";
 export default function App() {
- 
+  
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   return (
+    <EthereumProvider>
     <div className="m-0 p-0">
       {isAuthenticated && <Menu />}
 
@@ -22,7 +24,7 @@ export default function App() {
         />
         <Route
           path="/user-donations-launches"
-          element={isAuthenticated ? <UserList/> : <Authenticate />}
+          element={isAuthenticated ? <UserList /> : <Authenticate />}
         />
         <Route
           path="launch-donations"
@@ -38,6 +40,8 @@ export default function App() {
           element={isAuthenticated ? <Profile /> : <Authenticate />}
         />
       </Routes>
+     
     </div>
+    </EthereumProvider>
   );
 }

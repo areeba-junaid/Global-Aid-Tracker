@@ -33,7 +33,7 @@ const Profile = () => {
       </h2>
 
       <form
-        className="bg-gray-800 w-2/5 border rounded m-auto p-2 display flex flex-col"
+        className="bg-gray-800 w-2/5 border rounded m-auto p-5 display flex flex-col"
         id="profile-form"
       >
         <div className="text-2xl font-bold text-white ">John Doe</div>

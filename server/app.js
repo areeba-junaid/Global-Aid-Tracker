@@ -5,7 +5,9 @@ const cors = require("cors");
 const app = express();
 
 //routes import
-const profile_route = require("./Routes/profile"); //route
+const account_route = require("./Routes/account"); //route
+const aidRequest_route = require("./Routes/aidRequest"); //route
+const aidOffer_route = require("./Routes/aidOffer"); //route
 
 //port
 const port = process.env.PORT || 5000;
@@ -19,7 +21,9 @@ connection = mongoose
 //use middleware
 app.use(cors({ origin: true, credentials: false }));
 app.use(express.json({ extended: true }));
-app.use("/api/profile", profile_route);
+app.use("/api/account", account_route);
+app.use("/api/aidRequst", aidRequest_route);
+app.use("/api/aidOffer", aidOffer_route);
 
 //Listening to our Servers
 try {

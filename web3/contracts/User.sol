@@ -6,28 +6,18 @@ contract User {
     uint256 public userCount;
     uint256 public doneeCount;
     uint256 public donorCount;
-    struct UserData {
-        string name;
-        string email;
-        string country;
-        uint256 phone;
-        Type userType;
-    }
 
-    mapping(address => UserData) internal users;
+    struct userInfo {
+        Type userType;
+        bool valid;
+    }
 
     enum Type {
         DONEE,
         DONOR
     }
+    mapping(address => userInfo) public users;
     event RegisteredUser(address indexed account, Type indexed userType);
-    modifier oneProfile() {
-        require(
-            bytes(users[msg.sender].email).length == 0,
-            "User already registered"
-        );
-        _;
-    }
 
     constructor() {
         userCount = 0;
@@ -35,33 +25,24 @@ contract User {
         donorCount = 0;
     }
 
-    function registerUser(
-        string memory _name,
-        string memory _email,
-        string memory _country,
-        uint256 _phone,
-        Type _userType
-    ) external oneProfile {
-        UserData memory newUser = UserData(
-            _name,
-            _email,
-            _country,
-            _phone,
-            _userType
+    function registerUser(Type _userType) external {
+        require(
+            users[msg.sender].valid == false,
+            "User is already registered."
+        );
+        require(
+            _userType == Type.DONEE || _userType == Type.DONOR,
+            "Invalid user type"
         );
         userCount++;
+
+        userInfo memory newUser = userInfo(_userType, true);
+        users[msg.sender] = newUser;
+        emit RegisteredUser(msg.sender, _userType);
         if (_userType == Type.DONEE) {
             doneeCount++;
         } else if (_userType == Type.DONOR) {
             donorCount++;
         }
-        users[msg.sender] = newUser;
-        emit RegisteredUser(msg.sender, _userType);
-    }
-
-    function getUserInfo(
-        address account
-    ) public view returns (UserData memory) {
-        return users[account];
     }
 }

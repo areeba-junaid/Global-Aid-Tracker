@@ -1,15 +1,9 @@
 const mongoose = require("mongoose");
 
-const profileSchema = new mongoose.Schema({
-  account: {
+const accountSchema = new mongoose.Schema({
+  accountNo: {
     //metamask account Number
     type: String,
-    required: true,
-    unique: true,
-  },
-  id: {
-    //unique number generated
-    type: Number,
     required: true,
     unique: true,
   },
@@ -21,6 +15,7 @@ const profileSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   country: {
     type: String,
@@ -31,9 +26,10 @@ const profileSchema = new mongoose.Schema({
     required: true,
   },
   userType: {
-    type: Boolean,
+    type: String,
+    enum: ["donee", "donor"],
     required: true,
   },
 });
 
-module.exports = mongoose.model("Profile", profileSchema);
+module.exports = mongoose.model("Account", accountSchema);

@@ -3,7 +3,7 @@ import React from "react";
 const DonationForm = () => {
   return (
     <>
-      <h2 className="font-bold text-center mt-4 text-black text-2xl mb-4">Launch Donations</h2>
+      <h2 className="font-bold text-center mt-4 text-black text-2xl mb-4">Launch Donations Request</h2>
       <form
         id="donation-request-form"
         className="bg-gray-800  m-auto p-6 w-3/5 rounded-lg flex flex-col 
