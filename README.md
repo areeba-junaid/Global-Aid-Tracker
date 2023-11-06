@@ -1,2 +1,2 @@
 # Global-Aid-Tracker
- A web Application that allows all donees and donors to keep track of Aids given and Provided to People.
+ A decentralized web app that keeps track of all Aid received by donees and all Aid provided by Donors in ethers cryptocurrency.
