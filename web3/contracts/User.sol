@@ -16,8 +16,7 @@ contract User {
         DONEE,
         DONOR
     }
-    mapping(address => userInfo) public users;
-    event RegisteredUser(address indexed account, Type indexed userType);
+    mapping(address => userInfo) internal users;
 
     constructor() {
         userCount = 0;
@@ -38,11 +37,15 @@ contract User {
 
         userInfo memory newUser = userInfo(_userType, true);
         users[msg.sender] = newUser;
-        emit RegisteredUser(msg.sender, _userType);
         if (_userType == Type.DONEE) {
             doneeCount++;
         } else if (_userType == Type.DONOR) {
             donorCount++;
         }
     }
+
+    function getUserInfo() external view returns (Type, bool) {
+        return (users[msg.sender].userType, users[msg.sender].valid);
+    }
 }
+

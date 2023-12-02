@@ -1,47 +1,56 @@
 import { Route, Routes } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Authenticate from "./pages/Authentication/Authenticate";
-import HomePage from "./pages/Home/HomePage";
-import UserList from "./pages/UserList/UserList";
+import { useContext } from "react";
+import Register from "./pages/Register/Register";
+import Home from "./pages/Home/Home";
 import DonationForm from "./pages/DonationForm/DonationForm";
-import Profile from "./pages/Profile/Profile";
-import History from "./pages/History/History";
+import UserAccount from "./pages/UserAccount/UserAccount";
+import DoneeHistory from "./pages/History/DoneeHistory";
+import DonorHistory from "./pages/History/DonorHistory.jsx";
 import Menu from "./component/Menu";
+import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
+import { AuthContext, AuthProvider } from "./contextAPI/AuthContext";
+import { EthereumProvider } from "./contextAPI/EthereumContext";
 
-import { EthereumProvider } from "./ContextAPI/EthereumContext";
 export default function App() {
-  
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
   return (
-    <EthereumProvider>
+    <AuthProvider>
+      <EthereumProvider>
+        <AppContent />
+      </EthereumProvider>
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated } = useContext(AuthContext);
+  return (
     <div className="m-0 p-0">
       {isAuthenticated && <Menu />}
 
       <Routes>
         <Route
           path="/"
-          element={isAuthenticated ? <HomePage /> : <Authenticate />}
+          element={isAuthenticated ? <Home /> : <MetamaskWallet />}
+        />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/launch-donations"
+          element={isAuthenticated ? <DonationForm /> : <MetamaskWallet />}
         />
         <Route
-          path="/user-donations-launches"
-          element={isAuthenticated ? <UserList /> : <Authenticate />}
+          path="/donee-history"
+          element={isAuthenticated ? <DoneeHistory /> : <MetamaskWallet />}
         />
         <Route
-          path="launch-donations"
-          element={isAuthenticated ? <DonationForm /> : <Authenticate />}
-        />
-        <Route
-          path="/history"
-          element={isAuthenticated ? <History /> : <Authenticate />}
+          path="/donor-history"
+          element={isAuthenticated ? <DonorHistory /> : <MetamaskWallet />}
         />
 
         <Route
-          path="/profile"
-          element={isAuthenticated ? <Profile /> : <Authenticate />}
+          path="/user-account"
+          element={isAuthenticated ? <UserAccount /> : <MetamaskWallet />}
         />
       </Routes>
-     
     </div>
-    </EthereumProvider>
   );
 }

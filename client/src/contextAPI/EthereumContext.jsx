@@ -1,44 +1,22 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { ethers } from "ethers";
-// ABIs
-import abi from "../abis/Donations.json";
+import React, { createContext, useState, useContext } from "react";
 
-// Config
-import config from "../config.json";
-
-const EthereumContext = createContext();
+export const EthereumContext = createContext();
 
 export function EthereumProvider({ children }) {
+  
   const [state, setState] = useState({
-    provider: null,
-    contract: null,
+    contractRead:null,
+    contractWrite:null,
+    signer: null,
   });
 
-  const initContract = async () => {
-    try {
-      const contractABI = abi.abi;
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const network = await provider.getNetwork();
-      const contract = new ethers.Contract(
-        config[network.chainId].contract.address,
-        contractABI,
-        provider
-      );
-      setState({ provider, contract });
-      console.log("The contract :", contract);
-      console.log("The provider :", provider);
-   
-    } catch (error) {
-      console.log(error);
-    }
+  const contextValue = {
+    state, 
+    setState,
   };
 
-  useEffect(() => {
-    initContract();
-  }, []);
-
   return (
-    <EthereumContext.Provider value={state}>
+    <EthereumContext.Provider value={contextValue}>
       {children}
     </EthereumContext.Provider>
   );

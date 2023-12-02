@@ -43,7 +43,7 @@ contract Donations is User {
         contractOwner = msg.sender;
     }
 
-    function AidRequestReecieved(
+    function DonorOfferSend(
         uint _tId,
         address payable _donee
     )
@@ -62,7 +62,7 @@ contract Donations is User {
         return aidFundCollected[_tId];
     }
 
-    function DonorOfferSend(
+    function AidRequestReecieved(
         uint _tId,
         address payable _donee
     )
