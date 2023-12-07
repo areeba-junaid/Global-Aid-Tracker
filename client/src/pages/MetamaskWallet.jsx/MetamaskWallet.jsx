@@ -1,86 +1,39 @@
-import { React, useContext, useEffect, useState } from "react";
+import { React,useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 import metamask from "../../assets/images/metamask.png";
-import { AuthContext } from "../../contextAPI/AuthContext";
+import { getAccountInfo,} from "../../utils/Token";
 import { useEthereum } from "../../contextAPI/EthereumContext";
-// ABIs
-import abi from "../../abis/Donations.json";
-// Config
-import config from "../../config.json";
+import { useAuth } from "../../contextAPI/AuthContext";
 
 export default function MetamaskWallet() {
-  const { state, setState } = useEthereum();
-
-  const {
-    setIsAuthenticated,
-    setAccountType,
-    accountAddress,
-    setAccountAddress,
-  } = useContext(AuthContext);
+  const chainId = "0x7a69";
   const [connectError, setConnectError] = useState("");
+  const { accountAddress, setAccountAddress,setIsAuthenticated,setCurrentToken } = useAuth();
+  const {setToken}=useEthereum();
+
   const navigate = useNavigate();
 
-  const initContract = async () => {
-    try {
-      const contractABI = abi.abi;
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const network = await provider.getNetwork();
-      const contractRead = new ethers.Contract(
-        config[network.chainId].contract.address,
-        contractABI,
-        provider
-      );
-      const contractWrite = new ethers.Contract(
-        config[network.chainId].contract.address,
-        contractABI,
-        provider.getSigner()
-      );
-      const signer = await provider.getSigner().getAddress();
-      setState({
-        contractRead,
-        contractWrite,
-        signer,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    
-    const handleAccountsChanged = (accounts) => {
-      const newAccount = ethers.utils.getAddress(accounts[0]);
-      setAccountAddress(newAccount);
-      initContract();
-    };
-
+    sessionStorage.removeItem("token");
     ethereum.on("accountsChanged", handleAccountsChanged);
+    ethereum.on("chainChanged", handleChainChanged);
+
     // Cleanup the event listener when the component unmounts
     return () => {
       ethereum.off("accountsChanged", handleAccountsChanged);
+      ethereum.off("chainChanged", handleChainChanged);
     };
   }, [accountAddress]);
 
-  const checkUser = async () => {
-    try {
-      if (accountAddress && state.signer === accountAddress) {
-        setConnectError("");
-        const userInfo = await state.contractRead.getUserInfo();
-        console.log(userInfo);
-        if (userInfo[1] == true) {
-          setIsAuthenticated(true);
-          userInfo[0] === 1 ? setAccountType("donor") : setAccountType("donee");
-          navigate("/");
-        } else {
-         
-          navigate("/register");
-        }
-      } else {
-        setConnectError("Connect to Wallet First");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleAccountsChanged = (accounts) => {
+    const newAccount = ethers.utils.getAddress(accounts[0]);
+    setAccountAddress(newAccount);
+  };
+  const handleChainChanged = (network) => {
+    network != chainId
+      ? setConnectError("Switch to Correct Chain")
+      : setConnectError("");
   };
   const connectHandler = async () => {
     try {
@@ -90,13 +43,78 @@ export default function MetamaskWallet() {
         });
         const account = ethers.utils.getAddress(accounts[0]);
         setAccountAddress(account);
+        setConnectError("");
       }
-      initContract();
       setConnectError("");
     } catch (error) {
       console.log(error);
       setConnectError("Error Connecting to Metamask");
       console.log(connectError);
+    }
+    await networkHandler();
+  };
+
+  const networkHandler = async () => {
+    try {
+      const network = await window.ethereum.request({
+        method: "eth_chainId",
+      });
+
+      if (network !== chainId) {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: chainId }],
+        });
+      }
+    } catch (err) {
+      if (err.code == 4001) {
+        setConnectError("Connet to Required Chain of Website");
+      }
+      if (err.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainName: "Hardhat", // Adjust the chain name as needed
+                chainId: chainId,
+                nativeCurrency: { name: "Eth", decimals: 18, symbol: "ETH" },
+                rpcUrls: ["http://127.0.0.1:8545"],
+              },
+            ],
+          });
+        } catch (addChainErr) {
+          console.error("Error adding Ethereum chain:", addChainErr);
+          setConnectError("Error adding Ethereum chain");
+        }
+      }
+    }
+  };
+  
+  const token =async () => {
+    sessionStorage.setItem("token", accountAddress);
+    await setCurrentToken(accountAddress);
+    await  setToken(accountAddress);
+   
+   
+  };
+  const checkUser =async() => {
+    try {
+      if (accountAddress && !connectError) {
+        await token();
+        const data = await getAccountInfo();
+        console.log(data)
+        if (data.error) {
+         navigate("/register")
+        } else {
+         setIsAuthenticated(true);
+         navigate("/homepage")
+        }
+      } else {
+        setConnectError("Connect to Wallet First");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -115,9 +133,12 @@ export default function MetamaskWallet() {
           type="button"
           onClick={connectHandler}
         >
-          {accountAddress
-            ? accountAddress.slice(0, 6) + "..." + accountAddress.slice(38, 42)
-            : "Connect to Wallet"}
+          {!connectError && accountAddress
+            ? "Connected To: " +
+              accountAddress.slice(0, 6) +
+              "..." +
+              accountAddress.slice(38, 42)
+            : "Connect"}
         </button>
 
         <button

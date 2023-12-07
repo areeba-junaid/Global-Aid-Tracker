@@ -64,14 +64,14 @@ const updateAccount = async (req, res) => {
 
 const getAccount = async (req, res) => {
   try {
-    const { accountNo } = req.body;
-
+    
+    const  accountNo  = req.query.accountNo;
+    console.log(accountNo);
     const foundAccount = await accountSchema.findOne({
       accountNo,
     });
     if (!foundAccount) {
-      return res.status(404).json({ error: "Account not found" });
-      console.log(foundAccount);
+      return res.json({ error: "Account not found" });
     }
     res.json(foundAccount);
   } catch (error) {

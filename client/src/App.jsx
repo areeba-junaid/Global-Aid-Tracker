@@ -8,7 +8,7 @@ import DoneeHistory from "./pages/History/DoneeHistory";
 import DonorHistory from "./pages/History/DonorHistory.jsx";
 import Menu from "./component/Menu";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
-import { AuthContext, AuthProvider } from "./contextAPI/AuthContext";
+import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
 import { EthereumProvider } from "./contextAPI/EthereumContext";
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
 }
 
 function AppContent() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   return (
     <div className="m-0 p-0">
       {isAuthenticated && <Menu />}
@@ -30,25 +30,29 @@ function AppContent() {
       <Routes>
         <Route
           path="/"
-          element={isAuthenticated ? <Home /> : <MetamaskWallet />}
+          element={!isAuthenticated && <MetamaskWallet />}
         />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/homepage"
+          element={isAuthenticated && <Home />}
+        />
+        <Route path="/register" element={ <Register />} />
         <Route
           path="/launch-donations"
-          element={isAuthenticated ? <DonationForm /> : <MetamaskWallet />}
+          element={isAuthenticated  && <DonationForm /> }
         />
         <Route
           path="/donee-history"
-          element={isAuthenticated ? <DoneeHistory /> : <MetamaskWallet />}
+          element={isAuthenticated && <DoneeHistory /> }
         />
         <Route
           path="/donor-history"
-          element={isAuthenticated ? <DonorHistory /> : <MetamaskWallet />}
+          element={isAuthenticated  && <DonorHistory /> }
         />
 
         <Route
           path="/user-account"
-          element={isAuthenticated ? <UserAccount /> : <MetamaskWallet />}
+          element={isAuthenticated  && <UserAccount /> }
         />
       </Routes>
     </div>
