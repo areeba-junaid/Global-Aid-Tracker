@@ -1,15 +1,26 @@
 const AidRequest = require("../Model/aidRequestsDb");
+const accountSchema = require("../Model/accountDb");
 const Id = require("nodejs-unique-numeric-id-generator");
+const moment = require('moment');
 
 // Create a new aid request
 const createAidRequest = async (req, res) => {
   try {
-    const { aidType, aidName, aidInfo, targetAmount, doneeId } = req.body;
-    if (!aidType || !aidName || !aidInfo || !targetAmount || !doneeId) {
+    const { aidType, aidName, aidInfo, targetAmount, donee } = req.body;
+    if (!aidType || !aidName || !aidInfo || !targetAmount || !donee) {
       return res
         .status(401)
         .json({ error: "Required fields are missing or incorrect" });
     }
+    const userAccount = await accountSchema.findOne(
+      { accountNo: donee }
+     );
+     if (!userAccount) {
+       res.status(401).json({ error: "Account not registered " });
+       return;
+     }
+    const date=Date.now();
+    const createdAt = moment(date).format('DD MMM YYYY HH:mm:ss');
     const newAidRequest = new AidRequest({
       tId: Id.generate(new Date().toJSON()),
       aidType,
@@ -18,7 +29,8 @@ const createAidRequest = async (req, res) => {
       targetAmount,
       collectedAmount: 0,
       status: "open",
-      doneeId,
+      donee:userAccount._id,
+      createdAt
     });
 
     const savedAidRequest = await newAidRequest.save();
@@ -33,7 +45,7 @@ const createAidRequest = async (req, res) => {
 // Update an existing aid request
 const updateAidRequest = async (req, res) => {
   try {
-    const { tId, aidType, aidName, aidInfo, targetAmount, status, donee } =
+    const { tId, aidType, aidName, aidInfo, targetAmount, donee } =
       req.body;
 
     if (
@@ -42,7 +54,6 @@ const updateAidRequest = async (req, res) => {
       !aidName ||
       !aidInfo ||
       !targetAmount ||
-      !status ||
       !donee
     ) {
       return res
@@ -66,7 +77,6 @@ const updateAidRequest = async (req, res) => {
     updatedAidRequest.aidName = aidName;
     updatedAidRequest.aidInfo = aidInfo;
     updatedAidRequest.targetAmount = targetAmount;
-    updatedAidRequest.status = status;
     updatedAidRequest = await updatedAidRequest.save();
 
     res.json(updatedAidRequest);

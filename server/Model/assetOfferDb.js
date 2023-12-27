@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const aidRequestSchema = new mongoose.Schema({
+const assetOfferSchema = new mongoose.Schema({
   tId: {
     type: Number,
     required: true,
@@ -19,25 +19,17 @@ const aidRequestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  targetAmount: {
-    type: Number,
-    required: true,
-  },
-  collectedAmount: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
   status: {
     type: String,
     enum: ["closed", "open"],
     required: true,
   },
-  donee: {
+  account: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Account", // Reference the "Account" model
+    ref: "Account", // Reference the "account" model
     required: true,
   },
+
   createdAt:{
     type: String,
     default :Date,
@@ -45,4 +37,4 @@ const aidRequestSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("AidRequest", aidRequestSchema);
+module.exports = mongoose.model("AssetOffer", assetOfferSchema);

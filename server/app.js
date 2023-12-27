@@ -8,6 +8,7 @@ const app = express();
 const account_route = require("./Routes/account"); //route
 const aidRequest_route = require("./Routes/aidRequest"); //route
 const aidOffer_route = require("./Routes/aidOffer"); //route
+const asset_route = require("./Routes/assetOffer"); //route
 
 //port
 const port = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ app.use(express.json({ extended: true }));
 app.use("/api/account", account_route);
 app.use("/api/aidRequst", aidRequest_route);
 app.use("/api/aidOffer", aidOffer_route);
+app.use("/api/assetOffer",asset_route);
 
 //Listening to our Servers
 try {

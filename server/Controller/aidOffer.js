@@ -1,34 +1,34 @@
 const AidOffer = require("../Model/aidOfferDb");
+const accountSchema = require("../Model/accountDb");
 const Id = require("nodejs-unique-numeric-id-generator");
+const moment = require("moment");
 
 const createAidOffer = async (req, res) => {
   try {
-    const { aidType, aidName, aidInfo, elligibility, amount, donorId, limit } =
-      req.body;
+    const { aidType, aidName, aidInfo, amount, donor, limit } = req.body;
     console.log(req.body);
-    if (
-      !aidType ||
-      !aidName ||
-      !aidInfo ||
-      !elligibility ||
-      !amount ||
-      !donorId ||
-      !limit
-    ) {
+    if (!aidType || !aidName || !aidInfo || !amount || !donor || !limit) {
       return res
         .status(400)
         .json({ error: "Required fields are missing or incorrect" });
     }
+    const userAccount = await accountSchema.findOne({ accountNo: donor });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
+    }
+    const date = Date.now();
+    const createdAt = moment(date).format("DD MMM YYYY HH:mm:ss");
     const newAidOffer = new AidOffer({
       tId: Id.generate(new Date().toJSON()),
       aidType,
       aidName,
       aidInfo,
-      elligibility,
       amount,
       status: "open",
-      donor: donorId,
+      donor: userAccount._id,
       limit,
+      createdAt,
     });
     const savedAidOffer = await newAidOffer.save();
     res.status(201).json(savedAidOffer);
@@ -39,17 +39,22 @@ const createAidOffer = async (req, res) => {
 };
 const DoneeRequested = async (req, res) => {
   try {
-    const { tId, doneeId, proposal } = req.body;
-    if (!tId || !doneeId || !proposal) {
+    const { tId, donee, proposal } = req.body;
+    if (!tId || !donee || !proposal) {
       return res
         .status(400)
         .json({ error: "Required fields are missing or incorrect" });
+    }
+    const userAccount = await accountSchema.findOne({ accountNo: donee });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
     }
     const updatedAidOffer = await AidOffer.findOneAndUpdate(
       { tId },
       {
         $push: {
-          requestedBy: { donee: doneeId, proposal: proposal },
+          requestedBy: { donee: userAccount._id, proposal: proposal },
         },
       },
       { new: true }
@@ -65,17 +70,22 @@ const DoneeRequested = async (req, res) => {
 };
 const DoneeAccepted = async (req, res) => {
   try {
-    const { tId, doneeId, proposal } = req.body;
-    if (!tId || !doneeId || !proposal) {
+    const { tId, donee, proposal } = req.body;
+    if (!tId || !donee || !proposal) {
       return res
         .status(400)
         .json({ error: "Required fields are missing or incorrect" });
     }
+    const userAccount = await accountSchema.findOne({ accountNo: donee });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
+    }
     let updatedAidOffer = await AidOffer.findOneAndUpdate(
       { tId },
       {
-        $pull: { "requestedBy": { donee: doneeId } }, // Use $pull on the requestedBy array
-        $push: { "acceptedDonee": { donee: doneeId, proposal: proposal } }, // Use $push on the acceptedDonee array
+        $pull: { requestedBy: { donee: userAccount._id } }, // Use $pull on the requestedBy array
+        $push: { acceptedDonee: { donee: userAccount._id, proposal } }, // Use $push on the acceptedDonee array
       },
       { new: true }
     );
@@ -94,17 +104,10 @@ const DoneeAccepted = async (req, res) => {
 };
 
 const updateAidOffer = async (req, res) => {
-  const { aidType, aidName, aidInfo, elligibility, amount, limit, donorId } =
+  const { aidType, aidName, aidInfo, amount, limit, donor } =
     req.body;
   try {
-    if (
-      !aidType ||
-      !aidName ||
-      !aidInfo ||
-      !elligibility ||
-      !amount ||
-      !limit
-    ) {
+    if (!aidType || !aidName || !aidInfo || !amount || !limit || !donor) {
       return res
         .status(400)
         .json({ error: "Required fields are missing or incorrect" });
@@ -114,13 +117,11 @@ const updateAidOffer = async (req, res) => {
     if (!aidOffer) {
       return res.status(404).json({ error: "AidOffer not found" });
     }
-    c;
     if (aidOffer.acceptedDonee.length > 0) {
       return res.status(403).json({ error: "Funded Offers Can't be updated" });
     }
     aidOffer.aidName = aidName;
     aidOffer.aidInfo = aidInfo;
-    aidOffer.elligibility = elligibility;
     aidOffer.amount = amount;
     aidOffer.limit = limit;
     const updatedAidOffer = await aidOffer.save();
@@ -188,13 +189,18 @@ const deleteAidOffer = async (req, res) => {
 
 const doneeAcceptedOffersList = async (req, res) => {
   try {
-    const { doneeId } = req.body;
+    const { donee} = req.params;
 
-    if (!doneeId) {
+    if (!donee) {
       return res.status(400).json({ error: "Donee ID is missing" });
     }
+    const userAccount = await accountSchema.findOne({ accountNo: donee });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
+    }
     const acceptedAidOffers = await AidOffer.find({
-      "acceptedDonee.donee": doneeId,
+      "acceptedDonee.donee": userAccount._id,
     }).populate("donor");
     if (acceptedAidOffers.length === 0) {
       return res
@@ -209,12 +215,17 @@ const doneeAcceptedOffersList = async (req, res) => {
 };
 const doneeRequestedOffersList = async (req, res) => {
   try {
-    const { doneeId } = req.body;
-    if (!doneeId) {
+    const { donee } = req.params;
+    if (!donee) {
       return res.status(400).json({ error: "Donee ID is missing" });
     }
+    const userAccount = await accountSchema.findOne({ accountNo: donee });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
+    }
     const requestedAidOffers = await AidOffer.find({
-      "requestedBy.donee": doneeId,
+      "requestedBy.donee": userAccount._id,
     }).populate("donor");
     if (requestedAidOffers.length === 0) {
       return res
@@ -230,12 +241,17 @@ const doneeRequestedOffersList = async (req, res) => {
 
 const getDonorAidOffersList = async (req, res) => {
   try {
-    const { donorId } = req.body;
+    const { donor } = req.params;
 
-    if (!donorId) {
+    if (!donor) {
       return res.status(400).json({ error: "Donor ID is missing" });
     }
-    const donorAidOffers = await AidOffer.find({ donor: donorId }).populate({
+    const userAccount = await accountSchema.findOne({ accountNo: donor });
+    if (!userAccount) {
+      res.status(401).json({ error: "Account not registered " });
+      return;
+    }
+    const donorAidOffers = await AidOffer.find({ donor: userAccount._id}).populate({
       path: "requestedBy.donee acceptedDonee.donee",
       model: "Account",
     });

@@ -18,6 +18,6 @@ router.post("/update-fund", updateAidFund); // Update aid fund and it's status
 router.put("/close", closeAidRequest); // Manually close an aid request
 router.delete("/delete", deleteAidRequest); // Delete an aid request
 router.get("/donee-list/:accountNo", getDoneeAidRequest); // Get aid requests for a donee
-router.get("/donor-list", getDonorAidRequest); // Get donor-related aid requests
+router.get("/donor-list", getDonorAidRequest); // Get donor-related aid requests (to be checked)
 router.get("/all", getAllAidRequest); // Get all aid requests
 module.exports = router;

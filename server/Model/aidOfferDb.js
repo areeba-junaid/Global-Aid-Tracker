@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const aidOfferSchema = new mongoose.Schema({
   tId: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
   },
@@ -19,10 +19,7 @@ const aidOfferSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  elligibility: {
-    type: String,
-    required: true,
-  },
+ 
   amount: {
     type: Number,
     required: true,
@@ -65,6 +62,11 @@ const aidOfferSchema = new mongoose.Schema({
       },
     },
   ],
+  createdAt:{
+    type: String,
+    default :Date,
+    required :true,
+  },
 });
 
 module.exports = mongoose.model("AidOffer", aidOfferSchema);
