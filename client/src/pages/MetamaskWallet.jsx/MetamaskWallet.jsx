@@ -90,18 +90,39 @@ export default function MetamaskWallet() {
       }
     }
   };
-  
-  const token =async () => {
+  const personalSign=async()=>{
+    const message = "Sign this message";
+    try {
+      const signature = await window.ethereum.request({
+        method: "personal_sign",
+        params: [message, accountAddress],
+      });
+      console.log("Signature:", signature);
+      setConnectError("")
+      return signature;
+} catch (error) {
+  console.error("Error signing message:", error);
+  setConnectError("Please Sign in to continue")
+  return null;
+
+}
+  }
+  const token =async (sign) => {
+    
     sessionStorage.setItem("token", accountAddress);
     await setCurrentToken(accountAddress);
-    await  setToken(accountAddress);
+    await  setToken(accountAddress)}
    
    
-  };
+  
   const checkUser =async() => {
     try {
       if (accountAddress && !connectError) {
-        await token();
+        const sign= await personalSign();
+        if(!sign){
+          return;
+        }
+        await token(sign);
         const data = await getAccountInfo();
         console.log(data)
         if (data.error) {
