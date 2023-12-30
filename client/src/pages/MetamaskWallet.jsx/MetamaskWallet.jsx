@@ -90,8 +90,8 @@ export default function MetamaskWallet() {
       }
     }
   };
-  const personalSign=async()=>{
-    const message = "Sign this message";
+  const personalSign=async(message)=>{
+    
     try {
       const signature = await window.ethereum.request({
         method: "personal_sign",
@@ -107,22 +107,44 @@ export default function MetamaskWallet() {
 
 }
   }
-  const token =async (sign) => {
-    
-    sessionStorage.setItem("token", accountAddress);
-    await setCurrentToken(accountAddress);
-    await  setToken(accountAddress)}
+  const token =async (signature , message ) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/authToken/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ signature, message, address: accountAddress }),
+      });
+  
+      if (!response.ok) {
+        setConnectError("Error creating token");
+        return;
+      }
+      const responseBody = await response.json();
+      const token = responseBody.token;
+      console.log("Token" , token)
+      await sessionStorage.setItem("token", token);
+      await setCurrentToken(token);
+      await setToken(token);
+  
+    } catch (error) {
+      console.error("Error creating token:", error);
+      setConnectError("Error creating token");
+    }
+  }
    
    
   
   const checkUser =async() => {
     try {
       if (accountAddress && !connectError) {
-        const sign= await personalSign();
-        if(!sign){
+        const message = "Sign this message";
+        const signature= await personalSign(message);
+        if(!signature){
           return;
         }
-        await token(sign);
+        await token(signature, message);
         const data = await getAccountInfo();
         console.log(data)
         if (data.error) {

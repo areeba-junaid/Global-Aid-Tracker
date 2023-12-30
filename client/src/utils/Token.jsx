@@ -1,15 +1,46 @@
 import axios from "axios";
+
 const getToken = () => {
-  const token = sessionStorage.getItem("token");
-  if (token) return token.toString();
-  else return null;
+  return sessionStorage.getItem("token");
+};
+
+const decodeToken = async () => {
+  try {
+    const token = getToken();
+    if (!token) {
+      return null;
+    }
+    const response = await axios.get(
+      "http://localhost:5000/api/authToken/decode",
+      {
+        headers: {
+          authorization: token,
+        },
+      }
+    );
+
+    if (response.data && response.data.decodedToken) {
+      const { address } = response.data.decodedToken;
+      return address;
+    }
+  } catch (err) {
+    console.error("Axios request failed:", err);
+  }
+  return null;
 };
 const getAccountInfo = async () => {
   try {
-    const accountNo = getToken();
-    const response = await axios.get("http://localhost:5000/api/account/get",{params: {accountNo}});
+    const accountNo = await decodeToken();
+
+    const response = await axios.get("http://localhost:5000/api/account/get", {
+      headers:{
+        authorization:getToken(),
+      },
+      params: { accountNo },
+    });
 
     if (response.error) {
+      console.log(response.error);
       return null;
     } else if (response.data) {
       return response.data;
@@ -19,4 +50,4 @@ const getAccountInfo = async () => {
   }
   return null;
 };
-export { getAccountInfo, getToken };
+export { getAccountInfo, decodeToken };

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { getAccountInfo, getToken } from "../utils/Token";
+import { getAccountInfo, decodeToken } from "../utils/Token";
 
 export const AuthContext = createContext();
 
@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }) => {
 
   const valueInit = async () => {
     try {
+      const address=await decodeToken()
+      setAccountAddress(address);
       const data = await getAccountInfo();
       if (data) {
         if (data.userType) {
@@ -25,12 +27,11 @@ export const AuthProvider = ({ children }) => {
       console.error("Error initializing authentication:", error);
     }
   };
+ 
   useEffect(() => {
-    const token = getToken();
-    console.log("Auth context", token);
-    if (token) {
-      setAccountAddress(token);
-      console.log("Auth context", token);
+    
+    if( sessionStorage.getItem("token"))
+    { 
       valueInit();
     }
   }, [currentToken]);

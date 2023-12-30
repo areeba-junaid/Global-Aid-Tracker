@@ -21,6 +21,8 @@ export default function Authenticate() {
     accountAddress,
     setCurrentToken,
   } = useAuth();
+  console.log("Reg address ",accountAddress);
+  console.log("state", state)
   const navigate = useNavigate();
   // console.log(getCountries());
 

@@ -22,7 +22,6 @@ export function EthereumProvider({ children }) {
       try {
         // Check if the account address exists in sessionStorage
         const storedToken = sessionStorage.getItem("token");
-           console.log("Ethereum", storedToken);
         if (storedToken) {
           const contractABI = abi.abi;
           const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -37,11 +36,12 @@ export function EthereumProvider({ children }) {
             contractABI,
             provider.getSigner()
           );
-
+          
           setState({
             contractRead,
             contractWrite,
           });
+         
         }
       } catch (error) {
         console.error("Error initializing contract:", error);

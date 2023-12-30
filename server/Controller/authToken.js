@@ -12,12 +12,12 @@ const createAuthToken = (req, res) => {
   const { signature, address, message } = req.body;
   if (!isAddress(address)) {
       return res.status(400).json({ error: 'Invalid address' });
-    }
+   }
   if (!verifyAddress(signature, address, message)) {
     return res.status(401).json({ error: "Address verification failed" });
   }
-  const token = jwt.sign({ address }, secretKey, { expiresIn: "5m" });
-  return res.json({ token });
+  const token = jwt.sign({ address }, secretKey, { expiresIn: "30m" });
+  return res.status(200).json({ token });
 };
 
 // Function to decode and verify a JWT
