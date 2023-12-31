@@ -10,7 +10,7 @@ const Navbar = () => {
   const { accountType } = useContext(AuthContext);
 
   const navLinks = [
-    { to: "/", text: "Home", icon: <HomeIcon /> },
+    { to: "/homepage", text: "Home", icon: <HomeIcon /> },
     {
       to: `/launch-donations`,
       text: accountType === "donee" ? "Launch Aid Request" : "Launch Aid Offer",

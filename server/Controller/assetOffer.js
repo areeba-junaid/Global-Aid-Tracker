@@ -174,14 +174,14 @@ const getAllDoneeAssetOffer = async (req, res) => {
     if (!doneeAssetOffers || doneeAssetOffers.length === 0) {
         return res.json({ message: "Asset Not Found" });
      }
-    res.json(doneeAssetOffers);
+     res.status(200).json(doneeAssetOffers);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const getAllDonorAssetOffer = async (res) => {
+const getAllDonorAssetOffer = async (req, res) => {
   try {
     const donorAssetOffers = await AssetOffer.aggregate([
       {
@@ -201,9 +201,9 @@ const getAllDonorAssetOffer = async (res) => {
       }, ]);
     if (!donorAssetOffers || donorAssetOffers.length===0)
    {
-    return res.json({message: "Asset Not Found"});
+    return res.status(404).json({message: "Asset Not Found"});
    }
-    res.json(donorAssetOffers);
+   res.status(200).json(donorAssetOffers);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

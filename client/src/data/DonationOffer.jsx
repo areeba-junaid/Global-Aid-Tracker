@@ -7,7 +7,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": false,
+    "aidinfo": "Emergency medical supplies for a local hospital.Emergency medical supplies for a local hospital.Emergency medical supplies for a local hospital",
+    "targetamount": 5000,
+    "fundedinether": 2500,
+    "doneename": "HealthCare Foundation",
+    "country": "United States",
+    "phonenumber": "+1 555-1234",
+    "aidform": "Assets"
   },
   {
     "aidType": "Educational",
@@ -17,7 +24,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": true,
+    "aidinfo": "Nutritious food for families in need.Nutritious food for families in need.Nutritious food for families in need",
+    "targetamount": 10000,
+    "fundedinether": 6000,
+    "doneename": "Community Food Bank",
+    "country": "Canada",
+    "phonenumber": "+1 555-5678",
+    "aidform": "Assets"
   },
   {
     "aidType": "Emergency",
@@ -27,7 +41,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": true,
+    "aidinfo": "Construction materials for temporary shelters.Construction materials for temporary shelters.Construction materials for temporary shelters",
+    "targetamount": 12000,
+    "fundedinether": 0,
+    "doneename": "Habitat for Humanity",
+    "country": "Brazil",
+    "phonenumber": "+55 1234-5678",
+    "aidform": "Assets"
   },
   {
     "aidType": "Food",
@@ -37,7 +58,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": false,
+    "aidinfo": "Emergency supplies for natural disaster victims.Emergency supplies for natural disaster victims.Emergency supplies for natural disaster victims",
+    "targetamount": 15000,
+    "fundedinether": 0,
+    "doneename": "Red Cross",
+    "country": "Australia",
+    "phonenumber": "+61 412-345-678",
+    "aidform": "Assets"
   },
   {
     "aidType": "Technical",
@@ -47,7 +75,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": true,
+    "aidinfo": "Providing computers and internet access to schools.Providing computers and internet access to schools.Providing computers and internet access to schools",
+    "targetamount": 9000,
+    "fundedinether": 0,
+    "doneename": "Tech for Education",
+    "country": "South Africa",
+    "phonenumber": "+27 11-234-5678",
+    "aidform": "Funds"
   },
   {
     "aidType": "Educational",
@@ -57,7 +92,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": true,
+    "aidinfo": "Donation of winter clothing for the homeless.Donation of winter clothing for the homeless.Donation of winter clothing for the homeless",
+    "targetamount": 5000,
+    "fundedinether": 3000,
+    "doneename": "Warm Hearts Foundation",
+    "country": "Germany",
+    "phonenumber": "+49 1234-567890",
+    "aidform": "Assets"
   },
   {
     "aidType": "Educational",
@@ -67,7 +109,14 @@ const DonationOffer = [
     "accept": 0,
     "donor": "0xA25f9D3223183b5c917E7CaE94b68C0611cE5a8f",
     "request": 0,
-    "flag": true
+    "flag": true,
+    "aidinfo": "Installation of water purification systems in rural areas.Installation of water purification systems in rural areas.Installation of water purification systems in rural areas",
+    "targetamount": 6000,
+    "fundedinether": 2000,
+    "doneename": "Water for Life",
+    "country": "Kenya",
+    "phonenumber": "+254 712-345678",
+    "aidform": "Funds"
   }
 ];
 

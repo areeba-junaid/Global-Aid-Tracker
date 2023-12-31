@@ -10,6 +10,7 @@ import Menu from "./component/Menu";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
 import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
 import { EthereumProvider } from "./contextAPI/EthereumContext";
+import Footer from "./component/Footer";
 
 export default function App() {
   return (

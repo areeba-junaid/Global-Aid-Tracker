@@ -11,7 +11,6 @@ const DonationForm = () => {
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
-
     let body = {
       aidType: event.target["dr-donation-type"].value,
       aidName: event.target["dr-name"].value,
@@ -173,7 +172,7 @@ const DonationForm = () => {
         <input
           type="submit"
           className="bg-white text-black px-9 py-2 rounded-lg text-base font-semibold hover:bg-green-500 hover:text-white transition duration-300 mt-8 mb-4"
-          Launch
+         
         />
       </form>
     </>

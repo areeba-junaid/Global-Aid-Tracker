@@ -16,7 +16,7 @@ const createAuthToken = (req, res) => {
   if (!verifyAddress(signature, address, message)) {
     return res.status(401).json({ error: "Address verification failed" });
   }
-  const token = jwt.sign({ address }, secretKey, { expiresIn: "30m" });
+  const token = jwt.sign({ address }, secretKey, { expiresIn: "1h" });
   return res.status(200).json({ token });
 };
 

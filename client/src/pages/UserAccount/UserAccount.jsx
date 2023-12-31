@@ -1,154 +1,187 @@
-import React, { useState } from "react";
+//UserAccount Page
+// The final version with updations in UI (with both buttons) working/eiting/updating.
+// approved one
+
+import React, { useState } from 'react';
+import 'tailwindcss/tailwind.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faEnvelope, faGlobe, faPhone, faCreditCard} from '@fortawesome/free-solid-svg-icons';
+
 
 const UserAccount = () => {
-  // Define state and event handlers if needed
-  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    accountno: "12345", // Sample initial values
-    email: "johndoe@example.com", // Sample initial values
-    "phone-no": "555-555-5555", // Sample initial values
-    country: "usa",
+    name: 'Alex Willson',
+    email: 'alexwillson@gmail.com',
+    country: 'United States',
+    phoneno: '245 560098675',
+    accountNumber: '1234567890',    
   });
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const handleSave = () => {
-    setIsEditing(false);
-  };
-
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (isEditMode) {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+    
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isEditMode) {
+      console.log('Updating data:', formData);
+      // Add logic to update data in the database
+    } 
+
+    setIsEditMode(false);
   };
 
   return (
-    <>
-      <h2 className="font-bold text-center mt-4 text-black text-2xl mb-4">
-        Profile
-      </h2>
+    <div className="container max-w-3xl mx-auto mt-10 mb-10 p-8 text-left rounded shadow relative">
+      <h1 className="text-gray-600 font-bold text-center text-3xl">{isEditMode ? 'EDIT PERSONAL INFORMATION' : 'PERSONAL ACCOUNT INFORMATION'}</h1>
+      <br/>
+      
+      
 
-      <form
-        className="bg-gray-800 w-2/5 border rounded m-auto p-5 display flex flex-col"
-        id="profile-form"
-      >
-        <div className="text-2xl font-bold text-white ">John Doe</div>
-        <div className="flex items-center mb-4 mt-5">
-          <label htmlFor="accountno" className="text-white w-2/12">
-            <i className="fas fa-user"></i> Account No:
-          </label>
+      <div className="bg-blue-300 px-4 py-3">
+        <label className="flex items-center">
+        <span className="mr-2">
+        <FontAwesomeIcon icon={faCreditCard} />
+        </span>
+        <input
+          type="text"
+          name="accountNumber"
+          value={formData.accountNumber}
+          onChange={handleInputChange}
+          placeholder="Enter your account number"
+          maxLength="20" // Set a maximum length for the account number
+          pattern="[0-9]{1,20}" // Allow only digits, and between 1 and 20 characters
+          title="Please enter a valid account number"
+          readOnly
+          className="field-input bg-blue-300 w-3/4 px-2 py-1"
+        />
+        </label>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+      <div className="sub-container flex bg-gray-200 border border-blue-300 rounded px-8 py-8 mb-8">
+        <div className="flex-1">
+        <label className="flex items-center mb-4">
+          <span className="mr-2">
+          <FontAwesomeIcon icon={faUser} />
+          </span>
           <input
-            type="text" // Change type to text
-            id="accountno"
-            name="accountno"
-            value={formData.accountno}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="bg-white w-full text-purple-700 py-1 px-2 rounded"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            readOnly={!isEditMode}
+            className="field-input w-3/4 px-2 py-1 rounded"
           />
-        </div>
-        <div className="flex flex-row items-center mb-4">
-          <label htmlFor="email" className="w-2/12 text-white">
-            <i className="fas fa-envelope"></i> Email:
-          </label>
+        </label>
+        <br />
+        <label className="flex items-center mb-4">
+          <span className="mr-2">
+          <FontAwesomeIcon icon={faEnvelope} />
+          </span>
           <input
             type="email"
-            id="email"
             name="email"
             value={formData.email}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="bg-white w-full text-purple-700 py-1 px-2 rounded"
+            onChange={handleInputChange}
+            required
+            readOnly={!isEditMode}
+            className="field-input w-3/4 px-2 py-1 rounded"
           />
-        </div>
-        <div className="flex items-center mb-4">
-          <label htmlFor="phone-no" className="text-white w-2/12">
-            <i className="fas fa-phone"></i> Phone NO:
-          </label>
-          <input
-            type="tel"
-            id="phone-no"
-            name="phone-no"
-            value={formData["phone-no"]}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="w-full bg-white text-purple-700 py-1 px-2 rounded"
-          />
-        </div>
-        <div className="flex items-center mb-4">
-          <label htmlFor="country" className="w-2/12 text-white">
-            <i className="fas fa-globe"></i> Country:
-          </label>
-          <select
-            id="country"
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="bg-white text-purple-700 py-1 px-2 rounded"
-          >
-            <option value="usa">USA</option>
-            <option value="canada">Canada</option>
-            {/* Add more options here */}
-          </select>
-        </div>
-        <div className="flex items-center mb-3">
-          <label htmlFor="user-type" className="w-2/12 text-white">
-            User Type:
-          </label>
-          <select
-            id="user-type"
-            name="user-type"
-            disabled
-            className="bg-white text-purple-700 py-1 px-2 rounded"
-          >
-            <option value="donor">Donor</option>
-            <option value="donee">Donee</option>
-          </select>
+        </label>
         </div>
 
-        <div className="text-white donation-stats">
-          <p>
-            Donations Given: <span id="donations-given">100</span>
-          </p>
-          <p>
-            Donations Accepted: <span id="donations-accepted">50</span>
-          </p>
+        <div className="flex-2">
+        <label className="flex items-center mb-4">
+          <span className="mr-2">
+          <FontAwesomeIcon icon={faGlobe} />
+          </span>
+          <select
+            name="country"
+            value={formData.country}
+            onChange={handleInputChange}
+            required
+            readOnly={!isEditMode}
+            className="field-input w-3/4 px-2 py-1 rounded"
+          >            
+            {[
+                'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda',
+                'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain',
+                'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan',
+                'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria',
+                'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia', 'Cameroon', 'Canada', 'Central African Republic',
+                'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Côte d’Ivoire',
+                'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic',
+                'East Timor', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini',
+                'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany',
+                'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti',
+                'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland',
+                'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati',
+                'Korea, North', 'Korea, South', 'Kosovo', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon',
+                'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macedonia', 'Madagascar',
+                'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius',
+                'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique',
+                'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger',
+                'Nigeria', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Panama', 'Papua New Guinea', 'Paraguay',
+                'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis',
+                'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia',
+                'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia',
+                'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria',
+                'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey',
+                'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay',
+                'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe',
+              ].map((country) => (
+                <option key={country} value={country}>
+                  {country}
+                </option>
+              ))}
+          </select>
+        </label>
+        <br/>
+        <label className="flex items-center mb-4">
+          <span className="mr-2">
+          <FontAwesomeIcon icon={faPhone} />
+          </span>
+          <input
+            type="tel"
+            name="phoneno"
+            value={formData.phoneno}
+            onChange={handleInputChange}
+            maxLength={13}
+            title="Please enter a valid 10-digit phone number"
+            readOnly={!isEditMode}
+            required
+            className="field-input w-3/4 px-2 py-1 rounded"
+          />          
+        </label>
+        </div>
+      </div>
+
+        <div className="text-left">
+        <button className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
+        type="submit">Save
+        </button>
         </div>
       </form>
-      <div className="button-container flex flex-row justify-center space-x-6 pb-5 mt-5">
-        {isEditing ? (
-          <>
-            <button
-              id="save-button"
-              onClick={handleSave}
-              className="bg-black text-white hover:text-purple-600 hover:bg-purple-200 py-2 px-4 rounded"
-            >
-              Save
-            </button>
-            <button
-              id="edit-button"
-              disabled
-              className="bg-black text-white hover:text-purple-600 hover:bg-purple-200 py-2 px-4 rounded"
-            >
-              Edit
-            </button>
-          </>
-        ) : (
-          <button
-            id="edit-button"
-            onClick={handleEdit}
-            className="bg-black text-white hover:text-purple-600 hover:bg-purple-200 py-2 px-4 rounded"
-          >
-            Edit
-          </button>
-        )}
+
+      <div className="text-right">
+      <button className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
+      onClick={() => setIsEditMode(!isEditMode)}>
+        {isEditMode ? 'Cancel Edit' : 'Edit'}
+      </button>
       </div>
-    </>
+    </div>
   );
 };
 

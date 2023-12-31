@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link} from "react-router-dom";
 import {
   LocalHospital,
   Restaurant,
@@ -33,7 +34,7 @@ const aidStyles = {
   },
 };
 
-export default function DonateBox({ offer , showTargetAndFunded}) {
+export default function LaunchedProposalsBox({ offer , showTargetAndFunded}) {
   const [showFullAidInfo, setShowFullAidInfo] = useState(false);
 
   const toggleAidInfo = () => {
@@ -48,7 +49,9 @@ export default function DonateBox({ offer , showTargetAndFunded}) {
           style={{ backgroundColor: aidStyles[offer.aidType].color }}
         >
           {aidStyles[offer.aidType].icon}
-          <h3 className="">{offer.name}</h3>
+          <Link to={`/aid/${offer.tID}`} className="hover:underline">
+            <h3 className="">{offer.name}</h3>
+          </Link>
         </div>
         <div className="p-4 font-semibold font-sans">
           <p>

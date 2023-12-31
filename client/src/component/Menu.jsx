@@ -4,9 +4,11 @@ import Header from "./Header";
 
 function Menu() {
   return (
-    <div className="flex flex-col  w-full shadow-zinc-500 z-index-50 ">
-      <Header ></Header>
-      <Navbar ></Navbar>
+    <div className="sticky top-0 bg-white z-50">
+      <div className="sticky top-0">
+        <Header />
+        <Navbar />
+      </div>
     </div>
   );
 }
