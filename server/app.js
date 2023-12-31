@@ -31,7 +31,6 @@ app.use('/api', (req, res, next) => {
   if (req.path.startsWith('/authToken')) {
     next(); 
   } else {
-    console.log("I am FEDDDDD UP");
     verifyToken(req, res, next); 
   }
 });

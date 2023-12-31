@@ -5,15 +5,16 @@ const moment = require('moment');
 
 // Create a new aid request
 const createAidRequest = async (req, res) => {
+  console.log("Aid Request Creation started....")
   try {
-    const { aidType, aidName, aidInfo, targetAmount, donee } = req.body;
-    if (!aidType || !aidName || !aidInfo || !targetAmount || !donee) {
+    const { aidType, aidName, aidInfo, amount, account} = req.body;
+    if (!aidType || !aidName || !aidInfo || !amount || !account) {
       return res
         .status(401)
         .json({ error: "Required fields are missing or incorrect" });
     }
     const userAccount = await accountSchema.findOne(
-      { accountNo: donee }
+      { accountNo: account }
      );
      if (!userAccount) {
        res.status(401).json({ error: "Account not registered " });
@@ -26,7 +27,7 @@ const createAidRequest = async (req, res) => {
       aidType,
       aidName,
       aidInfo,
-      targetAmount,
+      targetAmount: amount,
       collectedAmount: 0,
       status: "open",
       donee:userAccount._id,
@@ -230,7 +231,7 @@ const getDonorAidRequest = async (req, res) => {
 
 const getAllAidRequest = async (req, res) => {
   try {
-    const aidRequests = await AidRequest.find().populate("donee");
+    const aidRequests = await AidRequest.find({status: "open"}).populate("donee");
     res.json(aidRequests);
   } catch (error) {
     console.error(error);

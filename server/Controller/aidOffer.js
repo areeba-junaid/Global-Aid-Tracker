@@ -5,14 +5,14 @@ const moment = require("moment");
 
 const createAidOffer = async (req, res) => {
   try {
-    const { aidType, aidName, aidInfo, amount, donor, limit } = req.body;
+    const { aidType, aidName, aidInfo, amount, account, limit } = req.body;
     console.log(req.body);
-    if (!aidType || !aidName || !aidInfo || !amount || !donor || !limit) {
+    if (!aidType || !aidName || !aidInfo || !amount || !account || !limit) {
       return res
         .status(400)
         .json({ error: "Required fields are missing or incorrect" });
     }
-    const userAccount = await accountSchema.findOne({ accountNo: donor });
+    const userAccount = await accountSchema.findOne({ accountNo: account });
     if (!userAccount) {
       res.status(401).json({ error: "Account not registered " });
       return;
@@ -271,7 +271,7 @@ const getDonorAidOffersList = async (req, res) => {
 
 const getAllAidOffer = async (req, res) => {
   try {
-    const aidOffers = await AidOffer.find().populate({
+    const aidOffers = await AidOffer.find({status:"open"}).populate({
       path: "donor requestedBy.donee acceptedDonee.donee",
     });
 

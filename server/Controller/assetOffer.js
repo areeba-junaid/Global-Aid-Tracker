@@ -166,7 +166,8 @@ const getAllDoneeAssetOffer = async (req, res) => {
       },
       {
         $match: {
-          'accountInfo.userType': 'donee'
+          'accountInfo.userType': 'donee',
+          status: "open"
         }
       }, ]);
     
@@ -180,7 +181,7 @@ const getAllDoneeAssetOffer = async (req, res) => {
   }
 };
 
-const getAllDonorAssetOffer = async (req, res) => {
+const getAllDonorAssetOffer = async (res) => {
   try {
     const donorAssetOffers = await AssetOffer.aggregate([
       {
@@ -193,7 +194,9 @@ const getAllDonorAssetOffer = async (req, res) => {
       },
       {
         $match: {
-          'accountInfo.userType': 'donor'
+          'accountInfo.userType': 'donor',
+           status: "open"
+        
         }
       }, ]);
     if (!donorAssetOffers || donorAssetOffers.length===0)

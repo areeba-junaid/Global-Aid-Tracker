@@ -8,7 +8,7 @@ const assetOfferSchema = new mongoose.Schema({
   },
   aidType: {
     type: String,
-    enum: ["educational", "emergency", "food", "medical", "technology"],
+    enum: ["education", "emergency", "food", "health", "technology", "other"],
     required: true,
   },
   aidName: {

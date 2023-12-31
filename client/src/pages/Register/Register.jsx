@@ -20,6 +20,7 @@ export default function Authenticate() {
     setAccountType,
     accountAddress,
     setCurrentToken,
+    currentToken
   } = useAuth();
   console.log("Reg address ",accountAddress);
   console.log("state", state)
@@ -84,8 +85,12 @@ export default function Authenticate() {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/account/create",
-        body
-      );
+        body,{
+          headers: {
+            authorization: currentToken,
+          },
+        });
+  
 
       if (response.status === 201) {
         console.log("Registered Successfully");
