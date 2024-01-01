@@ -6,13 +6,13 @@ import { useAuth } from "../../contextAPI/AuthContext";
 import axios from "axios";
 
 function AidOfferList() {
-  const { currentToken } = useAuth();
   const itemsPerRow = 1;
   const maxRows = 4;
   const [currentPage, setCurrentPage] = useState(0);
   const [aidFormFilter, setAidFormFilter] = useState("asset");
   const [fundOffers, setFundOffers] = useState([]);
   const [assetOffers, setAssetOffers] = useState([]);
+  const { currentToken } = useAuth();
 
   // Fetch offers based on aidFormFilter
   useEffect(() => {
@@ -48,7 +48,7 @@ function AidOfferList() {
     };
 
     fetchData();
-  }, [aidFormFilter, currentToken]);
+  }, [aidFormFilter]);
 
   const startIndex = currentPage * itemsPerRow * maxRows;
   const endIndex = startIndex + itemsPerRow * maxRows;

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import {
-  LocalHospital,
+import {LocalHospital,
   Restaurant,
   GppMaybe,
   School,
@@ -9,7 +8,7 @@ import {
   Public,
   Phone,
 } from "@mui/icons-material"; // Import MUI icons
-
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 const aidStyles = {
   health: {
     color: "#B2BEB5",
@@ -30,6 +29,10 @@ const aidStyles = {
   technology: {
     color: "#D3D3D3",
     icon: <Language />,
+  },
+  other: {
+    color: "#FF7E1",
+    icon: <CardGiftcardIcon/>,
   },
 };
 
