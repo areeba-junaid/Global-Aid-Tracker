@@ -7,10 +7,10 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 module.exports = {
   solidity: "0.8.19",
   defaultNetworks: "hardhat",
-  networks: {
+  /*networks: {
     sepolia: {
       url: SEPOLIA_URL,
       accounts: [PRIVATE_KEY],
     },
-  },
+  },*/
 };
