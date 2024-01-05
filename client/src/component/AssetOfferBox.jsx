@@ -1,42 +1,13 @@
 import React, { useState } from "react";
-import {LocalHospital,
-  Restaurant,
-  GppMaybe,
-  School,
-  Language,
+import aidStyles from "../utils/aidStyles"
+import {
   Person,
   Public,
   Phone,
-} from "@mui/icons-material"; // Import MUI icons
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-const aidStyles = {
-  health: {
-    color: "#B2BEB5",
-    icon: <LocalHospital style={{ fontSize: "24px" }} />,
-  },
-  education: {
-    color: "#ADD8E6",
-    icon: <School />,
-  },
-  emergency: {
-    color: "#98AFC7",
-    icon: <GppMaybe />,
-  },
-  food: {
-    color: "#D3D3D3",
-    icon: <Restaurant />,
-  },
-  technology: {
-    color: "#D3D3D3",
-    icon: <Language />,
-  },
-  other: {
-    color: "#FF7E1",
-    icon: <CardGiftcardIcon/>,
-  },
-};
-
+} from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 export default function AssetOfferBox({ offer}) {
+  const navigate = useNavigate();
   const [showFullAIDINFO, setShowFullAIDINFO] = useState(false);
 
   const toggleAIDINFO = () => {
@@ -44,7 +15,7 @@ export default function AssetOfferBox({ offer}) {
   };
 
   return (
-    <div className="w-3/4 flex flex-col justify-center items-center mx-auto">
+    <div className="w-3/4 flex flex-col justify-center items-center mx-auto  hover:bg-slate-100" onClick={()=>{navigate(`/asset-detail/${offer.tId}`);}}>
       <div className="border border-gray-500 rounded w-full max-w-md-40">
         <div
           className="flex flex-row w-full text-3xl space-x-7 p-2"

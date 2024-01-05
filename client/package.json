@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.9",
@@ -25,6 +26,7 @@
     "react-router-dom": "^6.15.0",
     "react-select": "^5.7.4",
     "react-select-country-list": "^2.2.3",
+    "react-table-6": "^6.11.0",
     "styled-components": "^6.0.8"
   },
   "devDependencies": {

@@ -1,42 +1,10 @@
 import React, { useState } from "react";
 import {
-  LocalHospital,
-  Restaurant,
-  GppMaybe,
-  School,
-  Language,
   Person,
   Public,
   Phone,
-} from "@mui/icons-material"; // Import MUI icons
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-const aidStyles = {
-  health: {
-    color: "#B2BEB5",
-    icon: <LocalHospital style={{ fontSize: "24px" }} />,
-  },
-  education: {
-    color: "#ADD8E6",
-    icon: <School />,
-  },
-  emergency: {
-    color: "#98AFC7",
-    icon: <GppMaybe />,
-  },
-  food: {
-    color: "#D3D3D3",
-    icon: <Restaurant />,
-  },
-  technology: {
-    color: "#D3D3D3",
-    icon: <Language />,
-  },
-  other: {
-    color: "#FF7E1",
-    icon: <CardGiftcardIcon/>,
-  },
-};
-
+} from "@mui/icons-material";
+import aidStyles from "../utils/aidStyles"
 export default function AidOfferBox({ offer}) {
   const [showFullAIDINFO, setShowFullAIDINFO] = useState(false);
 

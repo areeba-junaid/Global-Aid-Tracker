@@ -1,51 +1,23 @@
 import React, { useState } from "react";
+import aidStyles from "../utils/aidStyles"
+import { useNavigate } from "react-router-dom";
 import {
-  LocalHospital,
-  Restaurant,
-  GppMaybe,
-  School,
-  Language,
   Person,
   Public,
   Phone,
-} from "@mui/icons-material"; // Import MUI icons
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-const aidStyles = {
-  health: {
-    color: "#B2BEB5",
-    icon: <LocalHospital style={{ fontSize: "24px" }} />,
-  },
-  education: {
-    color: "#ADD8E6",
-    icon: <School />,
-  },
-  emergency: {
-    color: "#98AFC7",
-    icon: <GppMaybe />,
-  },
-  food: {
-    color: "#D3D3D3",
-    icon: <Restaurant />,
-  },
-  technology: {
-    color: "#D3D3D3",
-    icon: <Language />,
-  },
-  other: {
-    color: "#FF7E1",
-    icon: <CardGiftcardIcon/>,
-  },
-};
+} from "@mui/icons-material";
 
 export default function DonateBox({offer }) {
   const [showFullAidInfo, setShowFullAidInfo] = useState(false);
+  const navigate = useNavigate();
+
 
   const toggleAidInfo = () => {
     setShowFullAidInfo(!showFullAidInfo);
   };
 
   return (
-    <div className="w-3/4 flex flex-col justify-center items-center mx-auto">
+    <div className="w-3/4 flex flex-col justify-center items-center mx-auto hover:bg-slate-100 " onClick={()=>{navigate(`/aid-detail/${offer.tId}`);}}>
       <div className="border border-gray-500 rounded w-full max-w-md-40">
         <div
           className="flex flex-row w-full text-3xl space-x-7 p-2"
@@ -82,7 +54,7 @@ export default function DonateBox({offer }) {
           <div className="p-4 rounded mt-4 flex justify-center items-center">
             <Person className="mr-1" /> <p className="mr-6">{offer.donee.name}</p>
             <Public className="mx-1" /> <p className="mx-">{offer.donee.country}</p>
-            <Phone className="ml-10" /> <p className="ml">{offer.donee.phonenumber}</p>
+            <Phone className="ml-10" /> <p className="ml">{offer.donee.phone}</p>
           </div>
         </div>
       </div>

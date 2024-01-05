@@ -9,6 +9,7 @@ const {
   getDoneeAidRequest,
   getDonorAidRequest,
   getAllAidRequest,
+  getAidRequestDetail, 
 } = require("../Controller/aidRequest");
 
 // Define routes for creating, updating, and managing aid requests
@@ -20,4 +21,5 @@ router.delete("/delete", deleteAidRequest); // Delete an aid request
 router.get("/donee-list/:accountNo", getDoneeAidRequest); // Get aid requests for a donee
 router.get("/donor-list", getDonorAidRequest); // Get donor-related aid requests (to be checked)
 router.get("/all", getAllAidRequest); // Get all aid requests
+router.get("/get-aid-detail",getAidRequestDetail );
 module.exports = router;

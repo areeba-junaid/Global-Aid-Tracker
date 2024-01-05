@@ -6,11 +6,12 @@ import DonationForm from "./pages/DonationForm/DonationForm";
 import UserAccount from "./pages/UserAccount/UserAccount";
 import DoneeHistory from "./pages/History/DoneeHistory";
 import DonorHistory from "./pages/History/DonorHistory.jsx";
+import AidRequestDetail from "./pages/AidRequestDetail/AidRequestDetail"
 import Menu from "./component/Menu";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
 import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
 import { EthereumProvider } from "./contextAPI/EthereumContext";
-import Footer from "./component/Footer";
+
 
 export default function App() {
   return (
@@ -55,7 +56,12 @@ function AppContent() {
           path="/user-account"
           element={isAuthenticated  && <UserAccount /> }
         />
+         <Route
+          path="/aid-detail/:tId"
+          element={isAuthenticated  && <AidRequestDetail/> }
+        />
       </Routes>
+      
     </div>
   );
 }

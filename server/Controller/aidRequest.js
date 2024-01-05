@@ -237,6 +237,19 @@ const getAllAidRequest = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+}
+const getAidRequestDetail = async (req, res) => {
+  try {
+    const { tId } = req.query;
+    const aidRequests = await AidRequest.findOne({ tId }).populate("donee");
+    if (!aidRequests) {
+      res.status(404).json({ error: "Aid Request not Found" });
+    }
+    res.status(200).json(aidRequests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 module.exports = {
@@ -248,4 +261,18 @@ module.exports = {
   getDoneeAidRequest,
   getDonorAidRequest,
   getAllAidRequest,
+  getAidRequestDetail,
+};
+
+
+module.exports = {
+  createAidRequest,
+  updateAidRequest,
+  updateAidFund,
+  closeAidRequest,
+  deleteAidRequest,
+  getDoneeAidRequest,
+  getDonorAidRequest,
+  getAllAidRequest,
+  getAidRequestDetail 
 };
