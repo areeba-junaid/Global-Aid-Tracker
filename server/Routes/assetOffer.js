@@ -8,6 +8,7 @@ const {
     getUserAssetOffer,
     getAllDoneeAssetOffer,
     getAllDonorAssetOffer,
+    getAssetDetail,
 } = require("../Controller/assetOffer");
 
 // Define routes for creating, updating, and managing asset requests
@@ -17,5 +18,6 @@ router.put("/close", closeAssetOffer); // Manually close an asset  request
 router.delete("/delete", deleteAssetOffer); // Delete an asset  request
 router.get("/user-list/:accountNo",  getUserAssetOffer); // Get  asset  for a donee or donor
 router.get("/all-donee-asset-list",  getAllDoneeAssetOffer); // Get all donee asset offer
-router.get("/all-donor-asset-list",getAllDonorAssetOffer); // Get all donor asset offers
+router.get("/all-donor-asset-list",getAllDonorAssetOffer);
+router.get("/asset-offer-detail",getAssetDetail,); 
 module.exports = router;

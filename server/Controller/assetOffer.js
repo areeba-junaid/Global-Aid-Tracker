@@ -209,7 +209,19 @@ const getAllDonorAssetOffer = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
+const getAssetDetail = async (req, res) => {
+  try {
+    const { tId } = req.query;
+    const aidRequests =  await AssetOffer.findOne({ tId }).populate("account");
+    if (!aidRequests) {
+      res.status(404).json({ error: "Asset Offer not Found" });
+    }
+    res.status(200).json(aidRequests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 module.exports = {
   createAssetOffer,
   updateAssetOffer,
@@ -218,6 +230,7 @@ module.exports = {
   getUserAssetOffer,
   getAllDoneeAssetOffer,
   getAllDonorAssetOffer,
+  getAssetDetail,
 };
 
 

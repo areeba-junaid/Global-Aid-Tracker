@@ -7,6 +7,7 @@ import UserAccount from "./pages/UserAccount/UserAccount";
 import DoneeHistory from "./pages/History/DoneeHistory";
 import DonorHistory from "./pages/History/DonorHistory.jsx";
 import AidRequestDetail from "./pages/AidRequestDetail/AidRequestDetail"
+import AssetDetail from "./pages/AssetDetail/AssetDetail"
 import Menu from "./component/Menu";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
 import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
@@ -59,6 +60,10 @@ function AppContent() {
          <Route
           path="/aid-detail/:tId"
           element={isAuthenticated  && <AidRequestDetail/> }
+        />
+         <Route
+          path="/asset-detail/:tId"
+          element={isAuthenticated  && <AssetDetail/> }
         />
       </Routes>
       

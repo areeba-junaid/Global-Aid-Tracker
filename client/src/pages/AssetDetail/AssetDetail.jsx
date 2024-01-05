@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from "react";
 import "tailwindcss/tailwind.css";
-import DonationRecord from "./DonationRecord";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../contextAPI/AuthContext";
 import aidStyles from "../../utils/aidStyles";
@@ -20,14 +19,14 @@ import {
 
 const AidRequestDetail = () => {
   const [formData, setFormData] = useState({});
-  const { tId } = useParams();
   const { currentToken, accountAddress } = useAuth();
+  const { tId } = useParams();
   const fetchData = async () => {
     try {
       console.log(currentToken);
       console.log(tId);
       const response = await axios.get(
-        "http://localhost:5000/api/aidRequst/get-aid-detail",
+        "http://localhost:5000/api/assetOffer/asset-offer-detail",
         {
           headers: {
             authorization: currentToken,
@@ -79,14 +78,6 @@ const AidRequestDetail = () => {
               ipsum dolor sit amet consectetur adipisicing elit. Saepe,
               dignissimos? Necessitatibus enim, sequi
             </p>
-
-            <h2>
-              <strong>Funds Required:</strong> {formData.targetAmount} ethers{" "}
-            </h2>
-            <h2>
-              <strong>Funds Collected:</strong> {formData.collectedAmount}{" "}
-              ethers{" "}
-            </h2>
           </div>
 
           <div className="bg-white rounded flex flex-row justify-around p-3">
@@ -94,46 +85,45 @@ const AidRequestDetail = () => {
               <strong>Aid Type:</strong> {formData.aidType}
             </h1>
             <h1>
-              <strong>Aid Category:</strong> Fund
+              <strong>Aid Category:</strong> Asset
             </h1>
             <h1>
               <strong>Aid Type:</strong> {formData.status}
             </h1>
           </div>
-
-          {(<button
-            className="bg-green-700  hover:bg-green-600 rounded shadow self-center text-white p-2 w-4/12 mt-5"
-            type="submit"
-          >
-            Send Donation
-          </button>)}
         </div>
 
         <div className="flex-2 bg-blue-300 w-1/3  p-10 flex flex-col  rounded ">
-          <h2 className="self-center font-bold text-2xl py-6">DONEE INFORMATION</h2>
+          
+        {formData.account ?  ( <h2 className="self-center font-bold text-2xl py-6">
+              {formData.account.userType.toUpperCase()} INFORMATION
+            </h2> ):(
+            <p>Page is Loading</p>
+          )}
+          
 
-         {formData.donee?( <div className="flex flex-col bg-white rounded p-6">
-           
-            <h1 className="p-2">
-              <strong> Name: </strong> {formData.donee.name}
-            </h1>
-            <h1 className="p-2">
-              <strong>Country: </strong> {formData.donee.country}
-            </h1>
-            <h1 className="p-2">
-              <strong>Phone No:</strong> {formData.donee.phone}
-            </h1>
-            <h1 className="p-2">
-              <strong>Email:</strong> {formData.donee.email}
-            </h1>
-            <h1 className="p-2">
-              <strong>User Type:</strong> {formData.donee.userType}
-            </h1>
-          </div>):(<p>Page is Loading</p>)}
+          {formData.account ? (
+            <div className="flex flex-col bg-white rounded p-6">
+              <h1 className="p-2">
+                <strong> Name: </strong> {formData.account.name}
+              </h1>
+              <h1 className="p-2">
+                <strong>Country: </strong> {formData.account.country}
+              </h1>
+              <h1 className="p-2">
+                <strong>Phone No:</strong> {formData.account.phone}
+              </h1>
+              <h1 className="p-2">
+                <strong>Email:</strong> {formData.account.email}
+              </h1>
+              <h1 className="p-2">
+                <strong>User Type:</strong> {formData.account.userType}
+              </h1>
+            </div>
+          ) : (
+            <p>Page is Loading</p>
+          )}
         </div>
-      </div>
-       <div className="mt-10">
-        <DonationRecord/> 
       </div>
     </div>
   );
