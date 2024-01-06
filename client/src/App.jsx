@@ -12,6 +12,7 @@ import Menu from "./component/Menu";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
 import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
 import { EthereumProvider } from "./contextAPI/EthereumContext";
+import AidOfferDetail from "./pages/AidOfferDetail/AidOfferDetail";
 
 
 export default function App() {
@@ -58,12 +59,16 @@ function AppContent() {
           element={isAuthenticated  && <UserAccount /> }
         />
          <Route
-          path="/aid-detail/:tId"
+          path="/aid-request-detail/:tId"
           element={isAuthenticated  && <AidRequestDetail/> }
         />
          <Route
           path="/asset-detail/:tId"
           element={isAuthenticated  && <AssetDetail/> }
+        />
+        <Route
+          path="/aid-offer-detail/:tId"
+          element={isAuthenticated  && <AidOfferDetail/> }
         />
       </Routes>
       

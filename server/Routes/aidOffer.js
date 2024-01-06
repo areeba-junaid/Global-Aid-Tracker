@@ -11,6 +11,7 @@ const {
   doneeRequestedOffersList,
   getDonorAidOffersList,
   getAllAidOffer,
+  getAidOfferDetail
 } = require("../Controller/aidOffer");
 
 router.post("/create", createAidOffer);
@@ -23,4 +24,5 @@ router.get("/donee-accepted-offer-list/:donee", doneeAcceptedOffersList,);
 router.get("/donee-requested-offer-list/:donee", doneeRequestedOffersList,);
 router.get("/donor-offer-list/:donor", getDonorAidOffersList);
 router.get("/all", getAllAidOffer);
+router.get("/aid-offer-detail", getAllAidOffer);
 module.exports = router;

@@ -40,12 +40,12 @@ export default function AssetOfferBox({ offer}) {
             </button>
           </p>
 
-          {/* Combined container for Donee AIDNAME, Country, and Phone Number with icons */}
+          {offer.accountInfo?(
           <div className="rounded mt-4 flex justify-center items-center">
             <Person className="mr-1" /> <p className="mr-6">{offer.accountInfo[0].name}</p>
             <Public className="mx-1" /> <p className="mx-">{offer.accountInfo[0].country}</p>
             <Phone className="ml-10" /> <p className="ml">{offer.accountInfo[0].phone}</p>
-          </div>
+          </div>):(<></>)}
         </div>
       </div>
     </div>

@@ -1,6 +1,3 @@
-// Specific Aid Request Page
-//the final one with professional UI
-
 import React, { useEffect, useState } from "react";
 import "tailwindcss/tailwind.css";
 import DonationRecord from "./DonationRecord";
@@ -14,8 +11,9 @@ import {
   faUser,
   faGlobe,
   faPhone,
-  faPills, // Medical icon
-  faClock, // Time icon
+  faClock,
+  faMessage,
+  faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 
 const AidRequestDetail = () => {
@@ -52,6 +50,7 @@ const AidRequestDetail = () => {
     "aidStyles[formData.aidType].icon:",
     aidStyles[formData.aidType]?.icon
   );
+ 
   return (
     <div className="container w-max-8 mx-auto mb-10 p-3 rounded shadow ">
       <div className="flex">
@@ -101,39 +100,53 @@ const AidRequestDetail = () => {
             </h1>
           </div>
 
-          {(<button
-            className="bg-green-700  hover:bg-green-600 rounded shadow self-center text-white p-2 w-4/12 mt-5"
-            type="submit"
-          >
-            Send Donation
-          </button>)}
+          {formData.donee && formData.donee.accountNo != accountAddress ? (
+            <button
+              className="bg-green-700  hover:bg-green-600 rounded shadow self-center text-white p-2 w-4/12 mt-5"
+              type="submit"
+            >
+              Send Donation
+            </button>
+          ) : (
+            <p></p>
+          )}
         </div>
 
         <div className="flex-2 bg-blue-300 w-1/3  p-10 flex flex-col  rounded ">
-          <h2 className="self-center font-bold text-2xl py-6">DONEE INFORMATION</h2>
+          <h2 className="self-center font-bold text-2xl py-6">
+            DONEE INFORMATION
+          </h2>
 
-         {formData.donee?( <div className="flex flex-col bg-white rounded p-6">
-           
-            <h1 className="p-2">
-              <strong> Name: </strong> {formData.donee.name}
-            </h1>
-            <h1 className="p-2">
-              <strong>Country: </strong> {formData.donee.country}
-            </h1>
-            <h1 className="p-2">
-              <strong>Phone No:</strong> {formData.donee.phone}
-            </h1>
-            <h1 className="p-2">
-              <strong>Email:</strong> {formData.donee.email}
-            </h1>
-            <h1 className="p-2">
-              <strong>User Type:</strong> {formData.donee.userType}
-            </h1>
-          </div>):(<p>Page is Loading</p>)}
+          {formData.donee ? (
+            <div className="flex flex-col bg-white rounded p-6">
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faUser} />
+                <strong> Name: </strong> {formData.donee.name}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faGlobe} />
+                <strong> Country: </strong> {formData.donee.country}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faPhone} />
+                <strong> Phone No:</strong> {formData.donee.phone}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faMessage} /> <strong> Email:</strong>{" "}
+                {formData.donee.email}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faPerson} /> <strong>  User Type:</strong>{" "}
+                {formData.donee.userType}
+              </h1>
+            </div>
+          ) : (
+            <p>Page is Loading</p>
+          )}
         </div>
       </div>
-       <div className="mt-10">
-        <DonationRecord/> 
+      <div className="mt-10">
+        <DonationRecord />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ function AidOfferList() {
   const itemsPerRow = 1;
   const maxRows = 4;
   const [currentPage, setCurrentPage] = useState(0);
-  const [aidFormFilter, setAidFormFilter] = useState("asset");
+  const [aidFormFilter, setAidFormFilter] = useState("fund");
   const [fundOffers, setFundOffers] = useState([]);
   const [assetOffers, setAssetOffers] = useState([]);
   const { currentToken } = useAuth();

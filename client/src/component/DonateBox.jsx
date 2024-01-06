@@ -17,7 +17,7 @@ export default function DonateBox({offer }) {
   };
 
   return (
-    <div className="w-3/4 flex flex-col justify-center items-center mx-auto hover:bg-slate-100 " onClick={()=>{navigate(`/aid-detail/${offer.tId}`);}}>
+    <div className="w-3/4 flex flex-col justify-center items-center mx-auto hover:bg-slate-100 " onClick={()=>{navigate(`/aid-request-detail/${offer.tId}`);}}>
       <div className="border border-gray-500 rounded w-full max-w-md-40">
         <div
           className="flex flex-row w-full text-3xl space-x-7 p-2"
@@ -43,7 +43,7 @@ export default function DonateBox({offer }) {
           </p>
 
           
-          <div className="bg-blue-100 p-4 rounded mt-4 flex justify-center items-center">
+          <div className="bg-blue-200 p-4 rounded mt-4 flex justify-center items-center">
             <p className="mr-20" style={{ fontSize: "20px" }}>Target: {offer.targetAmount}</p>
             <p className="ml-20" style={{ fontSize: "20px" }}>Funded Amount: {offer.collectedAmount}</p>
           </div>
@@ -51,11 +51,11 @@ export default function DonateBox({offer }) {
 
 
           {/* Combined container for Donee Name, Country, and Phone Number with icons */}
-          <div className="p-4 rounded mt-4 flex justify-center items-center">
+         {offer.donee.name?(<div className="p-4 rounded mt-4 flex justify-center items-center">
             <Person className="mr-1" /> <p className="mr-6">{offer.donee.name}</p>
             <Public className="mx-1" /> <p className="mx-">{offer.donee.country}</p>
             <Phone className="ml-10" /> <p className="ml">{offer.donee.phone}</p>
-          </div>
+          </div>):(<></>)}
         </div>
       </div>
     </div>

@@ -39,8 +39,6 @@ export default function DonorHistory() {
       {/* Display the selected page */}
       {activePage === "launchedproposals" && <LaunchedProposals />}
       {activePage === "appliedoffers" && <AppliedOffers />}
-
-      <Footer />
     </div>
   );
 }

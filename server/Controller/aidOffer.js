@@ -286,6 +286,23 @@ const getAllAidOffer = async (req, res) => {
   }
 };
 
+const getAidOfferDetail=async(req,res)=>{
+  const {tId}=req.query;
+  try{
+  const aidOffer = await AidOffer.findOne({tId}).populate({
+    path: "donor requestedBy.donee acceptedDonee.donee",
+  });
+  console.log("The Offers:" ,aidOffer)
+  if (!aidOffer) {
+    return res.status(404).json({ error: "No aid offers found" });
+  }
+  res.status(200).json(aidOffer);}
+ catch (error) {
+  console.error(error);
+  res.status(500).json({ error: "Internal Server Error" });
+}
+}
+
 module.exports = {
   createAidOffer,
   DoneeRequested,
@@ -297,4 +314,5 @@ module.exports = {
   doneeRequestedOffersList,
   getDonorAidOffersList,
   getAllAidOffer,
+  getAidOfferDetail
 };

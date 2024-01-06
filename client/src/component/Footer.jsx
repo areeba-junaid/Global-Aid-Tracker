@@ -3,7 +3,7 @@ import { Facebook, Instagram, YouTube, Twitter, LinkedIn } from "@mui/icons-mate
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white p">
+    <footer className="bg-black text-white ">
       <div className="flex justify-center items-center">
         <h2 className="font-lg">About Us</h2>
         <span className="mx-2">|</span>

@@ -1,6 +1,3 @@
-// Specific Aid Request Page
-//the final one with professional UI
-
 import React, { useEffect, useState } from "react";
 import "tailwindcss/tailwind.css";
 import { useParams } from "react-router-dom";
@@ -13,8 +10,9 @@ import {
   faUser,
   faGlobe,
   faPhone,
-  faPills, // Medical icon
-  faClock, // Time icon
+  faClock,
+  faMessage,
+  faPerson, // Time icon
 } from "@fortawesome/free-solid-svg-icons";
 
 const AidRequestDetail = () => {
@@ -105,19 +103,19 @@ const AidRequestDetail = () => {
           {formData.account ? (
             <div className="flex flex-col bg-white rounded p-6">
               <h1 className="p-2">
-                <strong> Name: </strong> {formData.account.name}
+              <FontAwesomeIcon icon={faUser}/>  <strong> Name: </strong> {formData.account.name}
               </h1>
               <h1 className="p-2">
-                <strong>Country: </strong> {formData.account.country}
+              <FontAwesomeIcon icon={faGlobe}/> <strong>Country: </strong> {formData.account.country}
               </h1>
               <h1 className="p-2">
-                <strong>Phone No:</strong> {formData.account.phone}
+              <FontAwesomeIcon icon={faPhone}/> <strong>Phone No:</strong> {formData.account.phone}
               </h1>
               <h1 className="p-2">
-                <strong>Email:</strong> {formData.account.email}
+              <FontAwesomeIcon icon={faMessage}/>  <strong>Email:</strong> {formData.account.email}
               </h1>
               <h1 className="p-2">
-                <strong>User Type:</strong> {formData.account.userType}
+              <FontAwesomeIcon icon={faPerson}/> <strong>User Type:</strong> {formData.account.userType}
               </h1>
             </div>
           ) : (
