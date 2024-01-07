@@ -162,7 +162,7 @@ const DonationForm = () => {
             <input
               type="text"
               id="offers-open-to"
-              name="offers-open-to"
+              name="limit"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white"
             />
