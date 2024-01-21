@@ -115,7 +115,7 @@ const AidRequestDetail = () => {
       const receipt = await tx.wait();
       if (receipt.status === 1) {
         fetchTransactions();
-        return receipt;
+        return 1;
       } else {
         alert("Transaction Failed due to Error");
         console.error("Transaction failed or was reverted");
@@ -146,7 +146,7 @@ const AidRequestDetail = () => {
         return;
       }
         const Data = await donateEthers(amountInput);
-         if (Data !== null) {
+         if (Data ===1) {
          await readTotal();
         updateFund();
 

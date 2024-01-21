@@ -40,9 +40,9 @@ const DonationRequestsAccepted = ({ acceptedDonee, amount }) => {
   const defaultPageSize = data?.length < 10 ? data?.length : 5;
   return (
     <div>
-      <div className="sub-container bg-blue-300 rounded p-2 mt-4">
+      <div className="sub-container bg-blue-300 rounded p-3 mt-4">
         <h2 className="text-gray font-bold text-center">
-          DONATION REUESTS ACCEPTED
+          ACCEPTED DONATION OFFERS RECORD
         </h2>
       </div>
 

@@ -90,7 +90,7 @@ const DoneeAccepted = async (req, res) => {
         $push: { acceptedDonee: { donee: userAccount._id, proposal } }, // Use $push on the acceptedDonee array
       },
       { new: true }
-    );
+    ).populate( {path: "donor requestedBy.donee acceptedDonee.donee"});;
     if (!updatedAidOffer) {
       return res.status(404).json({ error: "AidOffer not found" });
     }
