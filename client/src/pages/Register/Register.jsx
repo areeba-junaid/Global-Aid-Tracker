@@ -31,7 +31,6 @@ export default function Authenticate() {
     name: "",
     email: "",
     phone: "",
-    orgNumber: "",
   });
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -70,17 +69,6 @@ export default function Authenticate() {
     //setCode(countryCode);
   };
 
-  const registerBlockChain = async (user) => {
-    try {
-      const tx = await state.contractWrite.registerUser(user);
-      await tx.wait();
-      return 1;
-    } catch (error) {
-      console.error("Error registering user:", error);
-      return 0;
-    }
-  };
-
   const registerDb = async (body) => {
     try {
       const response = await axios.post(
@@ -117,31 +105,25 @@ export default function Authenticate() {
     // Access the form element
     try {
       let form = event.target;
-      const user = parseInt(form.userType.value);
+      const user =form.userType.value;
       const body = {
         accountNo: accountAddress,
         name: form.orgName.value,
         email: form.email.value,
         country: selectedCountry.label,
         phone: phoneNumber,
-        userType: user === 1 ? "donor" : "donee",
-      };
-
-      console.log(state);
-     // if ((await registerBlockChain(user)) === 1) {
+        userType: user === '1' ? "donor" : "donee",
+      }
+     
         const resultDb = await registerDb(body);
-
         if (resultDb === 1) {
-          console.log("Registered to Db");
           const token = sessionStorage.getItem("token");
           setIsAuthenticated("true");
           setAccountType(body.userType);
           setCurrentToken(token);
           setToken(token);
           console.log("Register to Blockchain");
-          navigate("/homepage");
-        }
-    //  }
+          navigate("/homepage");}
     } catch (error) {
       console.log(error);
     }
@@ -153,7 +135,7 @@ export default function Authenticate() {
         <h1 className="text-3xl  text-black  font-semibold">Global Aid</h1>
       </div>
       <form
-        className="max-w-sm  m-auto flex flex-col  bg-white p-5 rounded shadow-md text-gray-600"
+        className="max-w-sm  m-auto flex flex-col  bg-white p-6 rounded shadow-md text-gray-600"
         onSubmit={registerUser}
       >
         <h1 className="m-2 text-2xl text-center text-black">
@@ -190,9 +172,9 @@ export default function Authenticate() {
         <Select
           className="block w-full p-1  rounded mb-4"
           options={options}
+          defaultValue={{ label: "Afghanistan", value: 0 }}//to correct
           value={selectedCountry}
           onChange={changeHandler}
-          defaultValue={{ label: "Afghanistan", value: 0 }} // Corrected syntax
         />
         {fieldErrors.phone && (
           <span className="text-red-500 text-sm ">{fieldErrors.phone}</span>
@@ -218,7 +200,7 @@ export default function Authenticate() {
 
         <input
           type="submit"
-          className="w-full text-center py-1 rounded text-white  bg-blue-800 hover:bg-blue-600"
+          className="w-full text-center py-2 rounded text-white  bg-blue-800 hover:bg-blue-600"
           value="Register Wallet"
         />
       </form>

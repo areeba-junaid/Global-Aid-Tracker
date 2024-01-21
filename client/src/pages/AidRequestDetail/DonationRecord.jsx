@@ -1,35 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactTable from 'react-table-6';
 import 'react-table-6/react-table.css';
 
-
-const DonationRecord = () => {
-  const [donations] = useState([
-    { donorName: 'John Williams', amount: '100', time: '2023-01-01T12:00' },
-    { donorName: 'Smith Sinclair', amount: '200', time: '2023-01-02T14:30' },
-    { donorName: 'Alice Johnson', amount: '150', time: '2023-01-03T10:45' },
-    { donorName: 'John Williams', amount: '100', time: '2023-01-01T12:00' },
-    { donorName: 'Smith Sinclair', amount: '200', time: '2023-01-02T14:30' },
-    { donorName: 'Alice Johnson', amount: '150', time: '2023-01-03T10:45' },
-    { donorName: 'John Williams', amount: '100', time: '2023-01-01T12:00' },
-    { donorName: 'Smith Sinclair', amount: '200', time: '2023-01-02T14:30' },
-    { donorName: 'Alice Johnson', amount: '150', time: '2023-01-03T10:45' },
-  ]);
-
+const DonationRecord = ({ record }) => {
   const columns = [
     {
-      Header: <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Donor Name</div>,
-      accessor: 'donorName',
+      Header: <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Donor Address</div>,
+      accessor: 'donor',
       Cell: ({ value }) => <div style={{ textAlign: 'center' }}>{value}</div>,
     },
     {
-      Header: () => <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Amount</div>,
+      Header: <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Amount</div>,
       accessor: 'amount',
       Cell: ({ value }) => <div style={{ textAlign: 'center' }}>{value}</div>,
     },
     {
-      Header: () => <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Time</div>,
-      accessor: 'time',
+      Header: <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Time</div>,
+      accessor: 'timestamp',
       Cell: ({ value }) => <div style={{ textAlign: 'center' }}>{value}</div>,
     },
   ];
@@ -40,13 +27,13 @@ const DonationRecord = () => {
         <h2 className="text-gray font-bold text-center">DONATION RECORD</h2>
       </div>
 
-      {donations.length > 0 && (
+      {record.length > 0 && (
         <ReactTable
-          data={donations}
+          data={record}
           columns={columns}
           defaultPageSize={10}
           pageSizeOptions={[5, 8, 10]}
-          keyExtractor={(item) => item.time} // Use a unique identifier for each row
+          keyExtractor={(item) => item.tId.toString()} // Assuming tId is unique
         />
       )}
     </div>

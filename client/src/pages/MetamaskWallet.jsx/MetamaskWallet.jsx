@@ -7,7 +7,7 @@ import { useEthereum } from "../../contextAPI/EthereumContext";
 import { useAuth } from "../../contextAPI/AuthContext";
 
 export default function MetamaskWallet() {
-  const chainId = "0x7a69";
+  const chainId = "0xaa36a7";
   const [connectError, setConnectError] = useState("");
   const { accountAddress, setAccountAddress,setIsAuthenticated,setCurrentToken } = useAuth();
   const {setToken}=useEthereum();
@@ -76,10 +76,10 @@ export default function MetamaskWallet() {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainName: "Hardhat", // Adjust the chain name as needed
+                chainName: "Sepolia test network", // Adjust the chain name as needed
                 chainId: chainId,
                 nativeCurrency: { name: "Eth", decimals: 18, symbol: "ETH" },
-                rpcUrls: ["http://127.0.0.1:8545"],
+                rpcUrls: ["https://sepolia.infura.io/v3/"],
               },
             ],
           });
@@ -185,7 +185,7 @@ export default function MetamaskWallet() {
         </button>
 
         <button
-          className="w-2/12 bg-blue-600 text-white p-2 "
+          className="w-2/12 bg-blue-600 text-white p-2  rounded"
           onClick={checkUser}
         >
           Continue

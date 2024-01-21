@@ -1,43 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
-import "./User.sol";
 
-contract Donations is User {
+contract Donations {
     address public contractOwner;
 
     // Use mappings to associate tId with Aid
-    mapping(uint => uint256) public aidFundCollected;
+    mapping(uint => uint256) private aidFundCollected;
 
     event aidOfferTransaction(
         address indexed donor,
         address indexed donee,
         uint indexed tId,
-        uint256 amount
+        uint256 amount,
+        uint256 time
     );
     event aidRequestTransaction(
         address indexed donor,
         address indexed donee,
         uint indexed tId,
-        uint256 amount
+        uint256 amount,
+        uint256 time
     );
 
-    modifier onlyDonee(address _donee) {
-        require(users[_donee].userType == Type.DONEE, "Only Donee Acceptable");
-        _;
-    }
-
-    modifier onlyDonor() {
-        require(
-            users[msg.sender].userType == Type.DONOR,
-            "Only Donor Acceptable"
-        );
-        _;
-    }
-
     modifier amountCheck() {
-        require(msg.value > 0, "Amount Should be greater than 0 ETH");
+        require(msg.value > 0, "Amount should be greater than 0 wei");
         _;
     }
+
 
     constructor() {
         contractOwner = msg.sender;
@@ -45,39 +34,45 @@ contract Donations is User {
 
     function DonorOfferSend(
         uint _tId,
-        address payable _donee
+        address payable _donee,
+        uint256 _time
     )
         external
         payable
-        onlyDonor
-        onlyDonee(_donee)
         amountCheck
         returns (uint256)
     {
         require(_tId > 0, "Invalid tId");
+        require(_time> 0 , "Invalid Time");
+        require(msg.sender != _donee, "Sender cannot be the donee");
         (bool callSuccess, ) = _donee.call{value: msg.value}("");
         require(callSuccess, "Call failed");
         aidFundCollected[_tId] += msg.value;
-        emit aidOfferTransaction(msg.sender, _donee, _tId, msg.value);
+        emit aidOfferTransaction(msg.sender, _donee, _tId, msg.value, _time);
         return aidFundCollected[_tId];
     }
 
-    function AidRequestReecieved(
+    function AidRequestRecieved(
         uint _tId,
-        address payable _donee
+        address payable _donee,
+        uint256 _time
     )
         external
         payable
-        onlyDonor
-        onlyDonee(_donee)
         amountCheck
         returns (uint256)
     {
         require(_tId > 0, "Invalid tId");
+        require(_time> 0 , "Invalid Time");
+        require(msg.sender != _donee, "Sender cannot be the donee");
         (bool callSuccess, ) = _donee.call{value: msg.value}("");
         require(callSuccess, "Call failed");
         aidFundCollected[_tId] += msg.value;
-        emit aidRequestTransaction(msg.sender, _donee, _tId, msg.value);
+        emit aidRequestTransaction(msg.sender, _donee, _tId, msg.value, _time);
+        return aidFundCollected[_tId];
+    }
+
+    function getCollectedFundInfo(uint _tId) external view returns (uint256) {
         return aidFundCollected[_tId];
     }
 }

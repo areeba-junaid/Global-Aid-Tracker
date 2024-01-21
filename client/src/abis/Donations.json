@@ -34,6 +34,12 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
         }
       ],
       "name": "aidOfferTransaction",
@@ -65,6 +71,12 @@
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
         }
       ],
       "name": "aidRequestTransaction",
@@ -81,9 +93,14 @@
           "internalType": "address payable",
           "name": "_donee",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_time",
+          "type": "uint256"
         }
       ],
-      "name": "AidRequestReecieved",
+      "name": "AidRequestRecieved",
       "outputs": [
         {
           "internalType": "uint256",
@@ -105,6 +122,11 @@
           "internalType": "address payable",
           "name": "_donee",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_time",
+          "type": "uint256"
         }
       ],
       "name": "DonorOfferSend",
@@ -116,25 +138,6 @@
         }
       ],
       "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "aidFundCollected",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -151,65 +154,14 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "doneeCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "donorCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getUserInfo",
-      "outputs": [
-        {
-          "internalType": "enum User.Type",
-          "name": "",
-          "type": "uint8"
-        },
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
-          "internalType": "enum User.Type",
-          "name": "_userType",
-          "type": "uint8"
+          "internalType": "uint256",
+          "name": "_tId",
+          "type": "uint256"
         }
       ],
-      "name": "registerUser",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "userCount",
+      "name": "getCollectedFundInfo",
       "outputs": [
         {
           "internalType": "uint256",
@@ -220,4 +172,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ]}
+  ]
+}

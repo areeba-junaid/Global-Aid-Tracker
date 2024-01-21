@@ -80,7 +80,7 @@ const updateAidRequest = async (req, res) => {
     updatedAidRequest.targetAmount = targetAmount;
     updatedAidRequest = await updatedAidRequest.save();
 
-    res.json(updatedAidRequest);
+    res.status(200).json(updatedAidRequest);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -88,13 +88,14 @@ const updateAidRequest = async (req, res) => {
 };
 
 const updateAidFund = async (req, res) => {
-  //trigger by donor
+  
   try {
+    console.log(req.body);
+
     const { tId, collectedAmount } = req.body;
+
     if (!tId || !collectedAmount) {
-      return res
-        .status(401)
-        .json({ error: "Required fields are missing or incorrect" });
+      return res.status(401).json({ error: "Required fields are missing or incorrect" });
     }
     let updatedAidRequest = await AidRequest.findOneAndUpdate(
       { tId },
@@ -109,7 +110,7 @@ const updateAidFund = async (req, res) => {
       updatedAidRequest = await updatedAidRequest.save();
     }
 
-    res.json(updatedAidRequest);
+     return res.status(200).json(updatedAidRequest);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

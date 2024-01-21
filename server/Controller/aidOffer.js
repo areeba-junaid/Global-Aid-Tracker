@@ -291,7 +291,7 @@ const getAidOfferDetail=async(req,res)=>{
   try{
   const aidOffer = await AidOffer.findOne({tId}).populate({
     path: "donor requestedBy.donee acceptedDonee.donee",
-  });
+  }).lean(); ;
   console.log("The Offers:" ,aidOffer)
   if (!aidOffer) {
     return res.status(404).json({ error: "No aid offers found" });

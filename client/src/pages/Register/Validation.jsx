@@ -14,5 +14,9 @@ export function validateEmail(email) {
 
 // Validate phone number using "impossible phone number" function
 export function validatePhoneNumber(phoneNumber) {
+  if (phoneNumber==="")
+  {
+    return false
+  }
   return isPossiblePhoneNumber(phoneNumber) === true;
 }

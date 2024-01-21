@@ -153,7 +153,7 @@ const DonationForm = () => {
           </>
         )}
 
-        {accountType === "donor" && (
+        {accountType === "donor" && selectedOption === "fund" &&(
           <label
             htmlFor="offers-open-to"
             className="block font-bold text-white"

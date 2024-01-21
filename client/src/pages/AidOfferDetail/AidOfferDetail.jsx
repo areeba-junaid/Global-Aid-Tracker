@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import ListOfDonees from "../AidRequestDetail/DonationRecord";
+import "tailwindcss/tailwind.css";
+import ListOfDonees from "./ListOfDonees";
+import DonationRequestsAccepted from "./DonationRequestsAccepted";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../contextAPI/AuthContext";
 import aidStyles from "../../utils/aidStyles";
 import axios from "axios";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUser,  
-  faGlobe, 
-  faPhone, 
-  faMedkit,        // Medical icon
-  faClock,         // Time icon
-} from '@fortawesome/free-solid-svg-icons';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faGlobe,
+  faPhone,
+  faClock,
+  faMessage,
+  faPerson,
+} from "@fortawesome/free-solid-svg-icons";
 
 const AidOfferDetail = () => {
   const [formData, setFormData] = useState({});
@@ -48,26 +51,108 @@ const AidOfferDetail = () => {
     "aidStyles[formData.aidType].icon:",
     aidStyles[formData.aidType]?.icon
   );
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-   console.log('Saving proposals data:', formData);
-      // Add logic to save data in the database
-
-    setFormData({
-      prposals: '',    
-    });
-    const aidType = 'Funds';
-
-  };
-
-
-  
-
+ 
   return (
+    <div className="container w-max-8 mx-auto mb-10 p-3 rounded shadow ">
+      <div className="flex">
+        <div className="flex-1 bg-gray-200 w-2/5 px-6 py-3 rounded border flex flex-col ">
+          <div className="flex flex-row justify-between rounded-md mb-3 px-4 py-4  ">
+            <h2 className="text-4xl">
+              {aidStyles[formData.aidType]?.icon} {formData.aidName}
+            </h2>
+            <h2 className="text-2xl ">
+              <FontAwesomeIcon icon={faClock} /> 12/08/23 04:25 PM
+            </h2>
+          </div>
 
-    <div>hi</div>
+          <div className=" bg-white rounded-md px-4 py-4 mb-5">
+            <p className="p-1 mb-5">
+              <strong className="text-2xl ">Aid Information: </strong>
+              {formData.aidInfo} Lorem ipsum dolor sit amet consectetur
+              adipisicing elit. Saepe, dignissimos? Necessitatibus enim, sequi
+              iste vitae incidunt modi. Temporibus optio nisi esse reprehenderit
+              distinctio illo, debitis perspiciatis blanditiis atque laboriosam
+              vitae.Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Saepe, dignissimos? Necessitatibus enim, sequi iste vitae incidunt
+              modi. Temporibus optio nisi esse reprehenderit distinctio illo,
+              debitis perspiciatis blanditiis atque laboriosam vitae. Lorem
+              ipsum dolor sit amet consectetur adipisicing elit. Saepe,
+              dignissimos? Necessitatibus enim, sequi
+            </p>
+
+            <h2>
+              <strong>Offer Amount:</strong> {formData.offerAmount} ethers{" "}
+            </h2>
+            <h2>
+              <strong>Offer Opened To:</strong> {formData.offerOpenedTo}{" "}
+              ethers{" "}
+            </h2>
+          </div>
+
+          <div className="bg-white rounded flex flex-row justify-around p-3">
+            <h1>
+              <strong>Aid Type:</strong> {formData.aidType}
+            </h1>
+            <h1>
+              <strong>Aid Category:</strong> Fund
+            </h1>
+            <h1>
+              <strong>Aid Type:</strong> {formData.status}
+            </h1>
+          </div>
+
+          {formData.donor && formData.donor.accountNo != accountAddress ? (
+            <button
+              className="bg-green-700  hover:bg-green-600 rounded shadow self-center text-white p-2 w-4/12 mt-5"
+              type="submit"
+            >
+              Accept Proposal
+            </button>
+          ) : (
+            <p></p>
+          )}
+        </div>
+
+        <div className="flex-2 bg-blue-300 w-1/3  p-10 flex flex-col  rounded ">
+          <h2 className="self-center font-bold text-2xl py-6">
+            DONOR INFORMATION
+          </h2>
+
+          {formData.donor ? (
+            <div className="flex flex-col bg-white rounded p-6">
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faUser} />
+                <strong> Name: </strong> {formData.donor.name}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faGlobe} />
+                <strong> Country: </strong> {formData.donor.country}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faPhone} />
+                <strong> Phone No:</strong> {formData.donor.phone}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faMessage} /> <strong> Email:</strong>{" "}
+                {formData.donor.email}
+              </h1>
+              <h1 className="p-2">
+                <FontAwesomeIcon icon={faPerson} /> <strong>  User Type:</strong>{" "}
+                {formData.donor.userType}
+              </h1>
+            </div>
+          ) : (
+            <p>Page is Loading</p>
+          )}
+        </div>
+      </div>
+      <div className="mt-10">
+        <ListOfDonees />
+      </div>
+      <div className="mt-10">
+        <DonationRequestsAccepted />
+      </div>
+    </div>
   );
 };
 

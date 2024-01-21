@@ -15,40 +15,40 @@ export function EthereumProvider({ children }) {
     contractWrite: null,
   });
   const [token,setToken]=useState(sessionStorage.getItem("token"));
-  
-  useEffect(() => {
-  
-    const initializeContract = async () => {
-      try {
-        // Check if the account address exists in sessionStorage
-        const storedToken = sessionStorage.getItem("token");
-        if (storedToken) {
-          const contractABI = abi.abi;
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const network = await provider.getNetwork();
-          const contractRead = new ethers.Contract(
-            config[network.chainId].contract.address,
-            contractABI,
-            provider
-          );
-          const contractWrite = new ethers.Contract(
-            config[network.chainId].contract.address,
-            contractABI,
-            provider.getSigner()
-          );
-          
-          setState({
-            contractRead,
-            contractWrite,
-          });
-         
-        }
-      } catch (error) {
-        console.error("Error initializing contract:", error);
+  const initializeContract = async () => {
+    try {
+      // Check if the account address exists in sessionStorage
+      const storedToken = sessionStorage.getItem("token");
+      if (storedToken) {
+        const contractABI = abi.abi;
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const network = await provider.getNetwork();
+        const contractRead = new ethers.Contract(
+          config[network.chainId].contract.address,
+          contractABI,
+          provider
+        );
+        const contractWrite = new ethers.Contract(
+          config[network.chainId].contract.address,
+          contractABI,
+          provider.getSigner()
+        );
+        
+        setState({
+          contractRead,
+          contractWrite,
+        });
+       
       }
+    } catch (error) {
+      console.error("Error initializing contract:", error);
+    }
+  };
+  useEffect(() => {
+    const initialize = async () => {
+      await initializeContract();
     };
-
-    initializeContract();
+    initialize();
   }, [token]);
 
   const contextValue = {

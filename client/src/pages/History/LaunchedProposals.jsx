@@ -14,7 +14,7 @@ function LaunchedProposals() {
   const [assetOffers, setAssetOffers] = useState([]);
   const { currentToken, accountAddress } = useAuth();
   const [fundedFilter, setFundedFilter] = useState(null);
-  const [flagFilter, setFlagFilter] = useState(null); 
+  const [flagFilter, setFlagFilter] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,12 +36,10 @@ function LaunchedProposals() {
         if (response.status === 200) {
           if (aidFormFilter === "fund") {
             setFundOffers(response.data);
-            console.log(response.data)
-        
+            console.log(response.data);
           } else {
             setAssetOffers(response.data);
-            console.log(response.data)
-          
+            console.log(response.data);
           }
         }
       } catch (error) {
@@ -52,8 +50,8 @@ function LaunchedProposals() {
 
     fetchData();
   }, [aidFormFilter]);
-  
-  let  Offer = aidFormFilter === "fund" ? fundOffers : assetOffers;
+
+  let Offer = aidFormFilter === "fund" ? fundOffers : assetOffers;
   const startIndex = currentPage * itemsPerRow * maxRows;
   const endIndex = startIndex + itemsPerRow * maxRows;
   Offer = Offer.filter((offer) => {
@@ -61,17 +59,18 @@ function LaunchedProposals() {
       flagFilter === null ||
       (flagFilter === "open" && offer.status === "open") ||
       (flagFilter === "closed" && offer.status === "closed");
-  
+
     const fundCondition =
-      (fundedFilter === null || offer.collectedAmount === undefined)||
+      fundedFilter === null ||
+      offer.collectedAmount === undefined ||
       (fundedFilter === "active" && offer.collectedAmount > 0) ||
       (fundedFilter === "inactive" && offer.collectedAmount === 0);
-  
+
     return statusCondition && fundCondition;
   });
   const displayedOffers = Offer.slice(startIndex, endIndex);
 
-  console.log(flagFilter, fundedFilter)
+  console.log(flagFilter, fundedFilter);
   const handleNextPage = () => {
     if ((currentPage + 1) * maxRows * itemsPerRow < Offer.length) {
       setCurrentPage((prevPage) => prevPage + 1);
@@ -100,92 +99,87 @@ function LaunchedProposals() {
     setFlagFilter(flagOption);
     setCurrentPage(0);
   };
-console.log("the filtered", Offer)
+  console.log("the filtered", Offer);
   return (
     <div className="w-5/6 mt-10 p-4 m-auto">
-      <h1 className="text-3xl font-semibold text-center">Launched Aid Request</h1>
+      <h1 className="text-3xl font-semibold text-center">
+        Launched Aid Request
+      </h1>
       <hr className="mt-4" />
 
-    
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <button
-              onClick={handlePrevPage}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNextPage}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-            >
-              Next
-            </button>
-          </div>
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={handlePrevPage}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNextPage}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          >
+            Next
+          </button>
+        </div>
 
-          {/* Aid Form Filter Radio Buttons */}
+        {/* Aid Form Filter Radio Buttons */}
+        <div className="mb-4">
+          <label className="text-lg font-bold mr-4">Type:</label>
+          <label className="text-lg mr-2">
+            <input
+              type="radio"
+              name="aidFormFilter"
+              value="fund"
+              checked={aidFormFilter === "fund"}
+              onChange={() => handleAidFormChange("fund")}
+              className="mr-2 h-4 w-6"
+            />
+            Fund
+          </label>
+          <label className="ml-4 text-lg">
+            <input
+              type="radio"
+              name="aidFormFilter"
+              value="asset"
+              checked={aidFormFilter === "asset"}
+              onChange={() => handleAidFormChange("asset")}
+              className="mr-2 h-4 w-6"
+            />
+            Asset
+          </label>
+        </div>
+
+        {/* Funded Filter Radio Buttons */}
+        <div className="mb-4">
+          <label className="text-lg font-bold mr-4">Status:</label>
+          <label className="text-lg mr-2">
+            <input
+              type="radio"
+              name="flagFilter"
+              value="open"
+              checked={flagFilter === "open"}
+              onChange={() => handleFlagChange("open")}
+              className="mr-1 h-4 w-6"
+            />
+            Open
+          </label>
+          <label className="ml-4 text-lg">
+            <input
+              type="radio"
+              name="flagFilter"
+              value="closed"
+              checked={flagFilter === "closed"}
+              onChange={() => handleFlagChange("closed")}
+              className="mr-2 h-4 w-6"
+            />
+            Close
+          </label>
+        </div>
+
+        {aidFormFilter === "fund" && (
           <div className="mb-4">
-          <label className="text-lg font-bold mr-4">
-          Type:
-        </label>
-            <label className="text-lg mr-2">
-              <input
-                type="radio"
-                name="aidFormFilter"
-                value="fund"
-                checked={aidFormFilter === "fund"}
-                onChange={() => handleAidFormChange("fund")}
-                className="mr-2 h-4 w-6"
-              />
-              Fund
-            </label>
-            <label className="ml-4 text-lg">
-              <input
-                type="radio"
-                name="aidFormFilter"
-                value="asset"
-                checked={aidFormFilter === "asset"}
-                onChange={() => handleAidFormChange("asset")}
-                className="mr-2 h-4 w-6"
-              />
-              Asset
-            </label>
-          </div>
-
-          {/* Funded Filter Radio Buttons */}
-          <div className="mb-4">
-          <label className="text-lg font-bold mr-4">
-          Status:
-        </label>
-            <label className="text-lg mr-2">
-              <input
-                type="radio"
-                name="flagFilter"
-                value="open"
-                checked={flagFilter=== "open"}
-                onChange={() => handleFlagChange("open")}
-                className="mr-1 h-4 w-6"
-              />
-              Open
-            </label>
-            <label className="ml-4 text-lg">
-              <input
-                type="radio"
-                name="flagFilter"
-                value="closed"
-                checked={flagFilter === "closed"}
-                onChange={() => handleFlagChange("closed")}
-                className="mr-2 h-4 w-6"
-              />
-              Close
-            </label>
-          </div>
-
-          
-         {aidFormFilter==="fund" &&( <div className="mb-4">
-          <label className="text-lg font-bold mr-4">
-        Funded:
-        </label>
+            <label className="text-lg font-bold mr-4">Funded:</label>
             <label className="text-lg mr-2">
               <input
                 type="radio"
@@ -208,28 +202,39 @@ console.log("the filtered", Offer)
               />
               No
             </label>
-          </div>)}
+          </div>
+        )}
 
-          {aidFormFilter === "fund" && (
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
-          {displayedOffers.map((offer, index) => (
-            <div key={index} className="flex justify-center flex-col">
-             <DonateBox offer={offer} />
-            </div>
-          ))}
-        </div>
-      )}
+        {aidFormFilter === "fund" && (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
+            {displayedOffers.map((offer, index) => (
+              <div key={index} className="flex justify-center flex-col">
+                <DonateBox offer={offer} />
+              </div>
+            ))}
+          </div>
+        )}
 
-      {aidFormFilter === "asset" && (
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
-          {displayedOffers.map((offer, index) => (
-            <div key={index} className="flex justify-center flex-col">
-              <AssetOfferBox offer={offer} />
-            </div>
-          ))}
-        </div>
-      )}
-        </div>
+        {aidFormFilter === "asset" && (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
+            {displayedOffers.map((offer, index) => (
+              <div key={index} className="flex justify-center flex-col">
+                <AssetOfferBox offer={offer} />
+              </div>
+            ))}
+          </div>
+        )}
+        {aidFormFilter === "fund" && Offer.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-2xl font-bold mb-7">No Fund Offers To Show</p>
+          </div>
+        ) : null}
+        {aidFormFilter === "asset" && Offer.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-2xl font-bold mb-7">No Asset Offers To Show</p>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
