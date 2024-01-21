@@ -58,7 +58,7 @@ const DoneeRequested = async (req, res) => {
         },
       },
       { new: true }
-    );
+    ).populate( {path: "donor requestedBy.donee acceptedDonee.donee"});
     if (!updatedAidOffer) {
       return res.status(404).json({ error: "AidOffer not found" });
     }
@@ -70,6 +70,7 @@ const DoneeRequested = async (req, res) => {
 };
 const DoneeAccepted = async (req, res) => {
   try {
+    console.log("Donor Accepting",req.body);
     const { tId, donee, proposal } = req.body;
     if (!tId || !donee || !proposal) {
       return res
@@ -77,6 +78,7 @@ const DoneeAccepted = async (req, res) => {
         .json({ error: "Required fields are missing or incorrect" });
     }
     const userAccount = await accountSchema.findOne({ accountNo: donee });
+    console.log(userAccount);
     if (!userAccount) {
       res.status(401).json({ error: "Account not registered " });
       return;
@@ -241,6 +243,7 @@ const doneeRequestedOffersList = async (req, res) => {
 
 const getDonorAidOffersList = async (req, res) => {
   try {
+    
     const { donor } = req.params;
 
     if (!donor) {
@@ -289,10 +292,7 @@ const getAllAidOffer = async (req, res) => {
 const getAidOfferDetail=async(req,res)=>{
   const {tId}=req.query;
   try{
-  const aidOffer = await AidOffer.findOne({tId}).populate({
-    path: "donor requestedBy.donee acceptedDonee.donee",
-  }).lean(); ;
-  console.log("The Offers:" ,aidOffer)
+  const aidOffer = await AidOffer.findOne({tId}).populate( {path: "donor requestedBy.donee acceptedDonee.donee"});
   if (!aidOffer) {
     return res.status(404).json({ error: "No aid offers found" });
   }

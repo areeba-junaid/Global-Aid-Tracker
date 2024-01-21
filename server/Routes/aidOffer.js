@@ -24,5 +24,5 @@ router.get("/donee-accepted-offer-list/:donee", doneeAcceptedOffersList,);
 router.get("/donee-requested-offer-list/:donee", doneeRequestedOffersList,);
 router.get("/donor-offer-list/:donor", getDonorAidOffersList);
 router.get("/all", getAllAidOffer);
-router.get("/aid-offer-detail", getAllAidOffer);
+router.get("/aid-offer-detail",   getAidOfferDetail);
 module.exports = router;

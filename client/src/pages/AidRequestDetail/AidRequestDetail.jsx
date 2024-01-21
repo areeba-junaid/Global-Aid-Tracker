@@ -145,12 +145,12 @@ const AidRequestDetail = () => {
         alert(" Please Enter Valid Number");
         return;
       }
-        // const Data = await donateEthers(amountInput);
-         //if (Data !== null) {
+        const Data = await donateEthers(amountInput);
+         if (Data !== null) {
          await readTotal();
         updateFund();
 
-     //}
+     }
     } catch (error) {
       console.error("Error sending donation:", error);
     
