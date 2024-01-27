@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { useContext } from "react";
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
 import DonationForm from "./pages/DonationForm/DonationForm";
@@ -9,6 +8,7 @@ import DonorHistory from "./pages/History/DonorHistory.jsx";
 import AidRequestDetail from "./pages/AidRequestDetail/AidRequestDetail"
 import AssetDetail from "./pages/AssetDetail/AssetDetail"
 import Menu from "./component/Menu";
+import Footer from "./component/Footer";
 import MetamaskWallet from "./pages/MetamaskWallet.jsx/MetamaskWallet";
 import { useAuth, AuthProvider } from "./contextAPI/AuthContext";
 import { EthereumProvider } from "./contextAPI/EthereumContext";
@@ -34,13 +34,13 @@ function AppContent() {
       <Routes>
         <Route
           path="/"
-          element={!isAuthenticated && <MetamaskWallet />}
+          element={!isAuthenticated ? <MetamaskWallet />:<Home /> }
         />
         <Route
           path="/homepage"
           element={isAuthenticated && <Home />}
         />
-        <Route path="/register" element={ <Register />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> :<Home /> } />
         <Route
           path="/launch-donations"
           element={isAuthenticated  && <DonationForm /> }
@@ -71,7 +71,7 @@ function AppContent() {
           element={isAuthenticated  && <AidOfferDetail/> }
         />
       </Routes>
-      
+ 
     </div>
   );
 }

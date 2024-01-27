@@ -101,7 +101,7 @@ const updateAidFund = async (req, res) => {
       { tId },
       { $set: { collectedAmount } },
       { new: true }
-    );
+    ).populate("donee");
     if (!updatedAidRequest) {
       return res.status(404).json({ error: "Aid Request not found" });
     }
@@ -109,7 +109,7 @@ const updateAidFund = async (req, res) => {
       updatedAidRequest.status = "closed";
       updatedAidRequest = await updatedAidRequest.save();
     }
-
+     
      return res.status(200).json(updatedAidRequest);
   } catch (error) {
     console.error(error);
@@ -213,16 +213,19 @@ const getDonorAidRequest = async (req, res) => {
     const { events } = req.body;
     const aidRequestDetails = [];
     for (const event of events) {
-      const aidRequest = await AidRequest.findOne({ tId: event.tId });
-
-      if (aidRequest) {
-        aidRequestDetails.push({
-          event,
-          aidRequest,
-        });
+    const aidRequest = await AidRequest.findOne({ tId: event.tId });
+    if (aidRequest) {
+      const aidRequestInfo = {
+        ...aidRequest.toObject(), 
+        donorDonation: event.amount ,
+        donortimestamp: event.timestamp ,
+      
+      }; 
+        aidRequestDetails.push(
+          aidRequestInfo,
+        )
       }
     }
-
     res.json(aidRequestDetails);
   } catch (error) {
     console.error(error);

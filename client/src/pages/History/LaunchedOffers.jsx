@@ -1,24 +1,78 @@
-import React, { useState } from "react";
-import LaunchedOfferBox from "./LaunchedOfferBox";
-import Offer from "../../data/AidOffer";
+import React, { useState, useEffect } from "react";
+import AidOfferBox from "../../component/AidOfferBox";
+import AssetOfferBox from "../../component/AssetOfferBox";
+import { useAuth } from "../../contextAPI/AuthContext";
+import axios from "axios";
+
 
 function LaunchedOffers() {
   const itemsPerRow = 1;
   const maxRows = 4;
   const [currentPage, setCurrentPage] = useState(0);
-  const [aidFormFilter, setAidFormFilter] = useState(null);
-  const [statusFilter, setStatusFilter] = useState(null);
-  const [optionFilter, setOptionFilter] = useState(null); // New state for option
+  const [aidFormFilter, setAidFormFilter] = useState("fund");
+  const [fundOffers, setFundOffers] = useState([]);
+  const [assetOffers, setAssetOffers] = useState([]);
+  const { currentToken, accountAddress } = useAuth();
+  const [fundedFilter, setFundedFilter] = useState(null);
+  const [flagFilter, setFlagFilter] = useState(null);
 
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let apiUrl = "";
+        accountAddress
+        if (aidFormFilter === "asset") {
+          apiUrl = `http://localhost:5000/api/assetOffer/user-list/${accountAddress}`;
+        } else if (aidFormFilter === "fund") {
+          apiUrl = `http://localhost:5000/api/aidOffer/donor-offer-list/${accountAddress}`;
+        }
+
+        const response = await axios.get(apiUrl, {
+          headers: {
+            authorization: currentToken,
+          },
+        });
+
+        if (response.status === 200) {
+          if (aidFormFilter === "fund") {
+            setFundOffers(response.data);
+            console.log(response.data);
+          } else {
+            setAssetOffers(response.data);
+            console.log(response.data);
+          }
+        }
+      } catch (error) {
+        // Handle error
+        console.error("Error:", error.message);
+      }
+    };
+
+    fetchData();
+  }, [aidFormFilter]);
+
+  let Offer = aidFormFilter === "fund" ? fundOffers : assetOffers;
   const startIndex = currentPage * itemsPerRow * maxRows;
   const endIndex = startIndex + itemsPerRow * maxRows;
+  Offer = Offer.filter((offer) => {
+    const statusCondition =
+      flagFilter === null ||
+      (flagFilter === "open" && offer.status === "open") ||
+      (flagFilter === "closed" && offer.status === "closed");
 
-  const displayedOffers = Offer.slice(startIndex, endIndex).filter(
-    (offer) =>
-      (aidFormFilter === null || (aidFormFilter === "fund" && offer.AIDFORM === "Fund") || (aidFormFilter === "asset" && offer.AIDFORM === "Asset")) &&
-      (statusFilter === null || (statusFilter === "active" && offer.ACCEPTED > 0) || (statusFilter === "inactive" && offer.ACCEPTED === 0)) &&
-      (optionFilter === null || (optionFilter === "close" && offer.FLAG === false) || (optionFilter === "open" && offer.FLAG === true))
-  );
+    const fundCondition =
+      fundedFilter === null ||
+      offer.acceptedDonee === undefined ||
+      (fundedFilter === "active" && offer.acceptedDonee?.length > 0) ||
+      (fundedFilter === "inactive" && offer.acceptedDonee?.length === 0);
+
+    return statusCondition && fundCondition;
+  });
+  
+  const displayedOffers = Offer.slice(startIndex, endIndex);
+
+  console.log(flagFilter, fundedFilter);
 
   const handleNextPage = () => {
     if ((currentPage + 1) * maxRows * itemsPerRow < Offer.length) {
@@ -34,131 +88,160 @@ function LaunchedOffers() {
 
   const handleAidFormChange = (form) => {
     setAidFormFilter(form);
+    setFundedFilter(null);
+    setFlagFilter(null);
+    setCurrentPage(0);
   };
 
-  const handleStatusChange = (status) => {
-    setStatusFilter(status);
+  const handleFundedChange = (fundedOption) => {
+    setFundedFilter(fundedOption);
+    setCurrentPage(0);
   };
 
-  const handleOptionChange = (option) => {
-    setOptionFilter(option);
+  const handleFlagChange = (flagOption) => {
+    setFlagFilter(flagOption);
+    setCurrentPage(0);
   };
 
-  return (
+   return (
     <div className="w-5/6 mt-10 p-4 m-auto">
-      <h1 className="text-3xl font-semibold text-center">Launched Offers</h1>
-      <div className="flex justify-between items-center mb-4">
-        <button
-          onClick={handlePrevPage}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-        >
-          Previous
-        </button>
-        <button
-          onClick={handleNextPage}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-        >
-          Next
-        </button>
-      </div>
+      <h1 className="text-3xl font-semibold text-center">
+        Launched Aid Request
+      </h1>
+      <hr className="mt-4" />
 
-      {/* Aid Form Filter Radio Buttons */}
-      <div className="mb-4 flex items-center">
-        <label className="text-lg font-bold mr-4">
-          Type:
-        </label>
-        <label className="text-lg mr-2">
-          <input
-            type="radio"
-            name="aidFormFilter"
-            value="fund"
-            checked={aidFormFilter === "fund"}
-            onChange={() => handleAidFormChange("fund")}
-            className="mr-2 h-4 w-6"
-          />
-          Fund
-        </label>
-        <label className="ml-4 text-lg">
-          <input
-            type="radio"
-            name="aidFormFilter"
-            value="asset"
-            checked={aidFormFilter === "asset"}
-            onChange={() => handleAidFormChange("asset")}
-            className="mr-2 h-4 w-6"
-          />
-          Asset
-        </label>
-      </div>
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <button
+            onClick={handlePrevPage}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNextPage}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          >
+            Next
+          </button>
+        </div>
 
-      {/* Status Filter Radio Buttons */}
-      <div className="mb-4 flex items-center">
-        <label className="text-lg font-bold mr-4">
-          Status:
-        </label>
-        <label className="text-lg mr-2">
-          <input
-            type="radio"
-            name="statusFilter"
-            value="active"
-            checked={statusFilter === "active"}
-            onChange={() => handleStatusChange("active")}
-            className="mr-1 h-4 w-6"
-          />
-          Active
-        </label>
-        <label className="text-lg">
-          <input
-            type="radio"
-            name="statusFilter"
-            value="inactive"
-            checked={statusFilter === "inactive"}
-            onChange={() => handleStatusChange("inactive")}
-            className="mr-1 h-4 w-6"
-          />
-          Inactive
-        </label>
-      </div>
+        {/* Aid Form Filter Radio Buttons */}
+        <div className="mb-4">
+          <label className="text-lg font-bold mr-4">Type:</label>
+          <label className="text-lg mr-2">
+            <input
+              type="radio"
+              name="aidFormFilter"
+              value="fund"
+              checked={aidFormFilter === "fund"}
+              onChange={() => handleAidFormChange("fund")}
+              className="mr-2 h-4 w-6"
+            />
+            Fund
+          </label>
+          <label className="ml-4 text-lg">
+            <input
+              type="radio"
+              name="aidFormFilter"
+              value="asset"
+              checked={aidFormFilter === "asset"}
+              onChange={() => handleAidFormChange("asset")}
+              className="mr-2 h-4 w-6"
+            />
+            Asset
+          </label>
+        </div>
 
-      {/* Option Filter Radio Buttons */}
-      <div className="mb-4 flex items-center">
-        <label className="text-lg font-bold mr-4">
-          Filter:
-        </label>
-        <label className="text-lg mr-2">
-          <input
-            type="radio"
-            name="optionFilter"
-            value="close"
-            checked={optionFilter === "close"}
-            onChange={() => handleOptionChange("close")}
-            className="mr-1 h-4 w-6"
-          />
-          Open
-        </label>
-        <label className="text-lg">
-          <input
-            type="radio"
-            name="optionFilter"
-            value="open"
-            checked={optionFilter === "open"}
-            onChange={() => handleOptionChange("open")}
-            className="mr-2 h-4 w-6"
-          />
-          Close
-        </label>
-      </div>
+        {/* Funded Filter Radio Buttons */}
+        <div className="mb-4">
+          <label className="text-lg font-bold mr-4">Status:</label>
+          <label className="text-lg mr-2">
+            <input
+              type="radio"
+              name="flagFilter"
+              value="open"
+              checked={flagFilter === "open"}
+              onChange={() => handleFlagChange("open")}
+              className="mr-1 h-4 w-6"
+            />
+            Open
+          </label>
+          <label className="ml-4 text-lg">
+            <input
+              type="radio"
+              name="flagFilter"
+              value="closed"
+              checked={flagFilter === "closed"}
+              onChange={() => handleFlagChange("closed")}
+              className="mr-2 h-4 w-6"
+            />
+            Close
+          </label>
+        </div>
 
-      {/* Displayed Offer Boxes */}
-      <div className="mx-auto text-center grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
-        {displayedOffers.map((offer, index) => (
-          <div key={index} className="flex justify-center flex-col">
-            <LaunchedOfferBox offer={offer} showAmountInEther={aidFormFilter !== "asset"} />
+        {aidFormFilter === "fund" && (
+          <div className="mb-4">
+            <label className="text-lg font-bold mr-4">Funded:</label>
+            <label className="text-lg mr-2">
+              <input
+                type="radio"
+                name="fundedFilter"
+                value="active"
+                checked={fundedFilter === "active"}
+                onChange={() => handleFundedChange("active")}
+                className="mr-1 h-4 w-6"
+              />
+              Yes
+            </label>
+            <label className="ml-4 text-lg">
+              <input
+                type="radio"
+                name="fundedFilter"
+                value="inactive"
+                checked={fundedFilter === "inactive"}
+                onChange={() => handleFundedChange("inactive")}
+                className="mr-1 h-4 w-6"
+              />
+              No
+            </label>
           </div>
-        ))}
+        )}
+
+        {aidFormFilter === "fund" && (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
+            {displayedOffers.map((offer, index) => (
+              <div key={index} className="flex justify-center flex-col">
+                <AidOfferBox offer={offer} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {aidFormFilter === "asset" && (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
+            {displayedOffers.map((offer, index) => (
+              <div key={index} className="flex justify-center flex-col">
+                <AssetOfferBox offer={offer} />
+              </div>
+            ))}
+          </div>
+        )}
+        {aidFormFilter === "fund" && Offer.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-2xl font-bold mb-7">No Fund Offers To Show</p>
+          </div>
+        ) : null}
+        {aidFormFilter === "asset" && Offer.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-2xl font-bold mb-7">No Asset Offers To Show</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
+
+
 
 export default LaunchedOffers;

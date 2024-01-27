@@ -11,6 +11,7 @@ const DonationForm = () => {
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
+   
     let body = {
       aidType: event.target["dr-donation-type"].value,
       aidName: event.target["dr-name"].value,
@@ -19,16 +20,28 @@ const DonationForm = () => {
     };
 
     if (selectedOption === "fund") {
+      let amount=parseFloat(event.target["amount"].value);
+      let limit = parseInt(event.target["limit"].value);
+      if (amount <=0 ){
+        alert("Amount should be greater than 0");
+        return
+      }
+  
+      if(limit <=0 ){
+        alert ("Offer Open To should be greater than 0");
+        return
+      }
       if (accountType === "donee") {
+        
         body = {
           ...body,
-          amount: event.target["amount"].value,
+          amount: amount,
         };
       } else if (accountType === "donor") {
         body = {
           ...body,
-          amount: event.target["amount"].value,
-          limit: event.target["limit"].value,
+          amount: amount,
+          limit: limit ,
         };
       }
     }
@@ -46,6 +59,13 @@ const DonationForm = () => {
           authorization: currentToken,
         },
       });
+      if ((response.status===200 || response.status===201) && accountType==="donee")
+      {
+             alert("Your Aid Request Has been Launched");
+      }
+      else if((response.status===200 || response.status===201) && accountType==="donor"){
+             alert("Your Aid Offer Has been Launched");
+      }
 
       // Handle response as needed
       console.log(response.data);
@@ -72,6 +92,9 @@ const DonationForm = () => {
           type="text"
           id="dr-name"
           name="dr-name"
+          maxLength="30"  
+          pattern="[a-zA-Z0-9 ]+"
+          title="Only alphabets, spaces, and numbers are allowed."
           required
           className="w-full px-3 py-2 border border-gray-100 rounded-lg text-gray-800 text-base bg-white"
         />
@@ -83,8 +106,12 @@ const DonationForm = () => {
           type="text"
           id="dr-info"
           name="dr-info"
+          maxLength="400"
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white"
+          pattern="[a-zA-Z0-9 ]+"
+          title="Only alphabets, spaces, and numbers are allowed."
+     
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 text-base bg-white"
         />
 
         <label
@@ -144,11 +171,12 @@ const DonationForm = () => {
               Amount In Ether:
             </label>
             <input
-              type="text"
+              type="number"
               id="amount"
               name="amount"
+              step="0.000001"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
             />
           </>
         )}
@@ -160,11 +188,13 @@ const DonationForm = () => {
           >
             Offers Open To:
             <input
-              type="text"
+              type="number"
               id="offers-open-to"
               name="limit"
+              min="1"
+              max="10"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 text-base bg-white [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
             />
           </label>
         )}

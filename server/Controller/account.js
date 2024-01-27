@@ -7,15 +7,15 @@ const createAccount = async (req, res) => {
   try {
     const { accountNo, name, email, country, phone, userType } = req.body;
     if (!accountNo || !name || !email || !country || !phone || !userType) {
-      res.status(401).json({ error: "Required fields are missing" });
-      return;
+      return res.status(401).json({ error: "Required fields are missing" });
+      
     }
     userAccount = await accountSchema.find({
-      $or: [{ accountNo }, { email }],
+      $or: [{ accountNo }, { email }, {phone}],
     });
     if (userAccount.length != 0) {
-      res.status(401).json({ error: "Account or email already Registered" });
-      return;
+      return res.status(401).json({ error: "User already Registered" });
+      
     }
     const newAccount = new accountSchema({
       accountNo: accountNo,

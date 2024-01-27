@@ -5,6 +5,10 @@
 import React, { useState, useEffect } from "react";
 import { getAccountInfo } from "../../utils/Token";
 import "tailwindcss/tailwind.css";
+import Select from "react-select";
+import countryList from "react-select-country-list";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -16,8 +20,8 @@ import {
 
 const UserAccount = () => {
   const [formData, setFormData] = useState({});
-
   const [isEditMode, setIsEditMode] = useState(false);
+  const options = countryList().getData(); // Define the 'options' variable for countries
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,15 +43,16 @@ const UserAccount = () => {
 
     setIsEditMode(false);
   };
+
   const fetchAccountInfo = async () => {
     const result = await getAccountInfo();
-    console.log(setFormData(result));
+    setFormData(result);
+    //console.log(setFormData(result));
   };
   useEffect(() => {
     fetchAccountInfo();
   }, []);
-
-  
+ 
 
   return (
     <div className="container max-w-3xl mx-auto mt-10 mb-10 p-8 text-left rounded shadow relative">
@@ -83,6 +88,9 @@ const UserAccount = () => {
                 onChange={handleInputChange}
                 required
                 readOnly={!isEditMode}
+                maxLength="100"  // Set the maximum character limit to 100
+                pattern="[A-Za-z ]+"
+                title="Only alphabets and spaces are allowed."
                 className="field-input w-3/4 px-2 py-1 rounded"
               />
             </label>
@@ -98,6 +106,9 @@ const UserAccount = () => {
                 onChange={handleInputChange}
                 required
                 readOnly={!isEditMode}
+                maxLength={50}
+                pattern="[A-Za-z][A-Za-z0-9.]*[A-Za-z0-9]@gmail\.com"
+                title="Enter a valid Gmail address."
                 className="field-input w-3/4 px-2 py-1 rounded"
               />
             </label>
@@ -108,231 +119,39 @@ const UserAccount = () => {
               <span className="mr-2">
                 <FontAwesomeIcon icon={faGlobe} />
               </span>
-              <select
+              <Select
                 name="country"
+                options={options} 
                 value={formData.country}
-                onChange={handleInputChange}
                 required
-                readOnly={!isEditMode}
+                onChange={(selectedOption) =>
+                  setFormData({
+                    ...formData,
+                    country: selectedOption,
+                  })
+                }
+                isDisabled={!isEditMode}
                 className="field-input w-3/4 px-2 py-1 rounded"
-              >
-                {[
-                  "Afghanistan",
-                  "Albania",
-                  "Algeria",
-                  "Andorra",
-                  "Angola",
-                  "Antigua and Barbuda",
-                  "Argentina",
-                  "Armenia",
-                  "Australia",
-                  "Austria",
-                  "Azerbaijan",
-                  "Bahamas",
-                  "Bahrain",
-                  "Bangladesh",
-                  "Barbados",
-                  "Belarus",
-                  "Belgium",
-                  "Belize",
-                  "Benin",
-                  "Bhutan",
-                  "Bolivia",
-                  "Bosnia and Herzegovina",
-                  "Botswana",
-                  "Brazil",
-                  "Brunei",
-                  "Bulgaria",
-                  "Burkina Faso",
-                  "Burundi",
-                  "Cabo Verde",
-                  "Cambodia",
-                  "Cameroon",
-                  "Canada",
-                  "Central African Republic",
-                  "Chad",
-                  "Chile",
-                  "China",
-                  "Colombia",
-                  "Comoros",
-                  "Congo",
-                  "Costa Rica",
-                  "Côte d’Ivoire",
-                  "Croatia",
-                  "Cuba",
-                  "Cyprus",
-                  "Czech Republic",
-                  "Denmark",
-                  "Djibouti",
-                  "Dominica",
-                  "Dominican Republic",
-                  "East Timor",
-                  "Ecuador",
-                  "Egypt",
-                  "El Salvador",
-                  "Equatorial Guinea",
-                  "Eritrea",
-                  "Estonia",
-                  "Eswatini",
-                  "Ethiopia",
-                  "Fiji",
-                  "Finland",
-                  "France",
-                  "Gabon",
-                  "Gambia",
-                  "Georgia",
-                  "Germany",
-                  "Ghana",
-                  "Greece",
-                  "Grenada",
-                  "Guatemala",
-                  "Guinea",
-                  "Guinea-Bissau",
-                  "Guyana",
-                  "Haiti",
-                  "Honduras",
-                  "Hungary",
-                  "Iceland",
-                  "India",
-                  "Indonesia",
-                  "Iran",
-                  "Iraq",
-                  "Ireland",
-                  "Israel",
-                  "Italy",
-                  "Jamaica",
-                  "Japan",
-                  "Jordan",
-                  "Kazakhstan",
-                  "Kenya",
-                  "Kiribati",
-                  "Korea, North",
-                  "Korea, South",
-                  "Kosovo",
-                  "Kuwait",
-                  "Kyrgyzstan",
-                  "Laos",
-                  "Latvia",
-                  "Lebanon",
-                  "Lesotho",
-                  "Liberia",
-                  "Libya",
-                  "Liechtenstein",
-                  "Lithuania",
-                  "Luxembourg",
-                  "Macedonia",
-                  "Madagascar",
-                  "Malawi",
-                  "Malaysia",
-                  "Maldives",
-                  "Mali",
-                  "Malta",
-                  "Marshall Islands",
-                  "Mauritania",
-                  "Mauritius",
-                  "Mexico",
-                  "Micronesia",
-                  "Moldova",
-                  "Monaco",
-                  "Mongolia",
-                  "Montenegro",
-                  "Morocco",
-                  "Mozambique",
-                  "Myanmar",
-                  "Namibia",
-                  "Nauru",
-                  "Nepal",
-                  "Netherlands",
-                  "New Zealand",
-                  "Nicaragua",
-                  "Niger",
-                  "Nigeria",
-                  "Norway",
-                  "Oman",
-                  "Pakistan",
-                  "Palau",
-                  "Panama",
-                  "Papua New Guinea",
-                  "Paraguay",
-                  "Peru",
-                  "Philippines",
-                  "Poland",
-                  "Portugal",
-                  "Qatar",
-                  "Romania",
-                  "Russia",
-                  "Rwanda",
-                  "Saint Kitts and Nevis",
-                  "Saint Lucia",
-                  "Saint Vincent and the Grenadines",
-                  "Samoa",
-                  "San Marino",
-                  "Sao Tome and Principe",
-                  "Saudi Arabia",
-                  "Senegal",
-                  "Serbia",
-                  "Seychelles",
-                  "Sierra Leone",
-                  "Singapore",
-                  "Slovakia",
-                  "Slovenia",
-                  "Solomon Islands",
-                  "Somalia",
-                  "South Africa",
-                  "South Sudan",
-                  "Spain",
-                  "Sri Lanka",
-                  "Sudan",
-                  "Suriname",
-                  "Sweden",
-                  "Switzerland",
-                  "Syria",
-                  "Taiwan",
-                  "Tajikistan",
-                  "Tanzania",
-                  "Thailand",
-                  "Togo",
-                  "Tonga",
-                  "Trinidad and Tobago",
-                  "Tunisia",
-                  "Turkey",
-                  "Turkmenistan",
-                  "Tuvalu",
-                  "Uganda",
-                  "Ukraine",
-                  "United Arab Emirates",
-                  "United Kingdom",
-                  "United States",
-                  "Uruguay",
-                  "Uzbekistan",
-                  "Vanuatu",
-                  "Vatican City",
-                  "Venezuela",
-                  "Vietnam",
-                  "Yemen",
-                  "Zambia",
-                  "Zimbabwe",
-                ].map((country) => (
-                  <option key={country} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
             <br />
             <label className="flex items-center mb-4">
               <span className="mr-2">
                 <FontAwesomeIcon icon={faPhone} />
               </span>
-              <input
-                type="tel"
-                name="phoneno"
+              <PhoneInput
+                name="phone"
                 value={formData.phone}
-                onChange={handleInputChange}
+                onChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    phone: value,
+                  })
+                }
+                required
+                readOnly={!isEditMode}
                 maxLength={13}
                 title="Please enter a valid 10-digit phone number"
-                readOnly={!isEditMode}
-                required
                 className="field-input w-3/4 px-2 py-1 rounded"
               />
             </label>
@@ -353,8 +172,8 @@ const UserAccount = () => {
         <button
           className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
           onClick={() => {
-    setIsEditMode(!isEditMode);
-  }}
+          setIsEditMode(!isEditMode);
+          }}
         >
           {isEditMode ? "Cancel Edit" : "Edit"}
         </button>

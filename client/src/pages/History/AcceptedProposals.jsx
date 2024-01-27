@@ -1,138 +1,117 @@
-import React, { useState } from "react";
-import AcceptedProposalBox from "./AcceptedProposalBox";
-import Offer from "../../data/DonationOffer";
+import { ethers } from "ethers";
+import React, { useState, useEffect } from "react";
+import DonateBox from "../../component/AidOfferBox";
+import { useAuth } from "../../contextAPI/AuthContext";
+import { useEthereum } from "../../contextAPI/EthereumContext";
+import axios from "axios";
+import { _fetchData } from "ethers/lib/utils";
 
 function AcceptedProposals() {
   const itemsPerRow = 1;
   const maxRows = 4;
+  const { state } = useEthereum();
   const [currentPage, setCurrentPage] = useState(0);
-  const [statusFilter, setStatusFilter] = useState(null);
-  const [optionFilter, setOptionFilter] = useState(null); // New state for option
+  const [fundOffers, setFundOffers] = useState([]);
+  const { currentToken, accountAddress } = useAuth();
+  const [flagFilter, setFlagFilter] = useState(null);
+  const [donationSummary, setDonationSummary] = useState([]);
+  
+  const getCurrentTimeFormatted = (time) => {
+    const formattedDate = new Date(time * 1000).toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return formattedDate;
+  };
+  const blockchainRecord = async () => {
+    try {
+      if (state.contractRead != null) {
+        const events = await state.contractRead.queryFilter(
+          "aidRequestTransaction"
+        );
+        const transactions = events.map((event) => ({
+          donor: event.args.donor,
+          donee: event.args.donee,
+          tId: event.args.tId.toNumber(),
+          amount: ethers.utils.formatEther(event.args.amount),
+          timestamp: getCurrentTimeFormatted(event.args.time.toNumber()),
+        }));
+        console.log("The transactions",transactions);
+        const donorTransaction = transactions.filter(
+          (transaction) =>{ 
+          if (transaction.donor == accountAddress)
+          {
+            return transaction;
+          }}
+        );
+        donorTransaction.reverse();
+        console.log("User Transaction",donorTransaction);
+        sumOfDonorTransactions(donorTransaction);
+      }
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+  const sumOfDonorTransactions = (donorTransaction) => {
+    const summary = donorTransaction.reduce((acc, transaction) => {
+      const existingTransaction = acc.find((item) => item.tId === transaction.tId);
+      if (existingTransaction) {
+        existingTransaction.amount += parseFloat(transaction.amount);
+      } else {
+        acc.push({
+          tId: transaction.tId,
+          timestamp: transaction.timestamp,
+          amount: parseFloat(transaction.amount),
+        });
+      }
+      return acc;
+    }, []);
+    setDonationSummary(summary);
+  };
 
-  const startIndex = currentPage * itemsPerRow * maxRows;
-  const endIndex = startIndex + itemsPerRow * maxRows;
-
-  const displayedOffers = Offer.slice(startIndex, endIndex).filter(
-    (offer) =>
-      (statusFilter === null ||
-        (statusFilter === "active" && offer.fundedinether > 0) ||
-        (statusFilter === "inactive" && offer.fundedinether === 0)) &&
-      (optionFilter === null ||
-        (optionFilter === "open" && offer.flag === true) ||
-        (optionFilter === "close" && offer.flag === false))
-  );
-
-  const handleNextPage = () => {
-    if ((currentPage + 1) * maxRows * itemsPerRow < Offer.length) {
-      setCurrentPage((prevPage) => prevPage + 1);
+  const fetchData = async () => {
+    try {
+      console.log(currentToken);
+      const body ={
+        events: donationSummary
+      }
+      console.log(body)
+      const response = await axios.post(
+        "http://localhost:5000/api/aidRequst/donor-list",body,
+        {
+          headers: {
+            authorization: currentToken,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("The response : ", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching aid detail:", error);
     }
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage((prevPage) => prevPage - 1);
+const donorHistory = async () => {
+    await blockchainRecord();
+  };
+
+  useEffect(() => {
+    donorHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  useEffect(() => {
+    if (donationSummary.length > 0) {
+      fetchData();
     }
-  };
+  }, [donationSummary]);
 
-  const handleStatusChange = (status) => {
-    setStatusFilter(status);
-  };
-
-  const handleOptionChange = (option) => {
-    setOptionFilter(option);
-  };
-
-  return (
-    <div className="w-5/6 mt-10 p-4 m-auto">
-      <h1 className="text-3xl font-semibold text-center">Accepted Proposals</h1>
-      <hr className="mt-4" />
-
-      {displayedOffers.length > 0 && (
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <button
-              onClick={handlePrevPage}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNextPage}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-            >
-              Next
-            </button>
-          </div>
-
-          {/* Status Filter Radio Buttons */}
-          <div className="mb-4">
-            <label className="text-lg font-bold mr-4">
-              Status:
-              </label>
-              <label className="text-lg mr-2">
-              <input
-                type="radio"
-                name="statusFilter"
-                value="active"
-                checked={statusFilter === "active"}
-                onChange={() => handleStatusChange("active")}
-                className="mr-1 h-4 w-6"
-              />
-              Active
-            </label>
-            <label className="text-lg">
-              <input
-                type="radio"
-                name="statusFilter"
-                value="inactive"
-                checked={statusFilter === "inactive"}
-                onChange={() => handleStatusChange("inactive")}
-                className="mr-1 h-4 w-6"
-              />
-              Inactive
-            </label>
-          </div>
-
-          {/* Option Filter Radio Buttons */}
-          <div className="mb-4">
-            <label className="text-lg font-bold mr-4">
-              Filter:
-              </label>
-              <label className = "text-lg mr-2">
-              <input
-                type="radio"
-                name="optionFilter"
-                value="open"
-                checked={optionFilter === "open"}
-                onChange={() => handleOptionChange("open")}
-                className="mr-1 h-4 w-6"
-              />
-              Open
-            </label>
-            <label className="text-lg">
-              <input
-                type="radio"
-                name="optionFilter"
-                value="close"
-                checked={optionFilter === "close"}
-                onChange={() => handleOptionChange("close")}
-                className="mr-1 h-4 w-6"
-              />
-              Close
-            </label>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 ">
-            {displayedOffers.map((offer, index) => (
-              <div key={index} className="flex justify-center flex-col">
-                <AcceptedProposalBox offer={offer} showTargetAndFunded={true} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  return <div>Hello World</div>;
 }
 
 export default AcceptedProposals;

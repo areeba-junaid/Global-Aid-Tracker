@@ -40,7 +40,6 @@ export default function DonorHistory() {
       {activePage === "launchedOffers" && <LaunchedOffers />}
       {activePage === "acceptedProposals" && <AcceptedProposals />}
 
-      <Footer />
     </div>
   );
 }

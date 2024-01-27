@@ -24,6 +24,7 @@ const AidOfferDetail = () => {
   const { tId } = useParams();
   const { currentToken, accountAddress,accountType } = useAuth();
   const [userExist, setUserExist] = useState(false);
+  const [userAccepted, setUserAccepted] = useState(false);
   const [total, setTotal]=useState(null);
   const { state } = useEthereum();
   const [isDonor , setIsDonor]=useState(false);
@@ -65,6 +66,7 @@ const AidOfferDetail = () => {
       );
       alert("Thankyou for Donating!!!");
       const receipt = await tx.wait();
+      console.log(receipt);
       if (receipt.status === 1) {
         readTotal();
         return 1;
@@ -112,7 +114,10 @@ const AidOfferDetail = () => {
     const Data = await donateEthers(original.accountAddress);
     console.log(Data);
     if(Data===1){
-    donorAcceptRequest(body);}
+    donorAcceptRequest(body);
+    setUserAccepted(true);
+    setUserExist(false);
+  }
 
   };
   const donorAcceptRequest = async (body) => {
@@ -155,6 +160,13 @@ const AidOfferDetail = () => {
         if (userExist) {
           setUserExist(true);
         }
+        const userAccepted = response.data.acceptedDonee.find((accept) => {
+          return accept.donee.accountNo === accountAddress;
+        });
+        if (userAccepted) {
+          setUserAccepted(true);
+        }
+        console.log(userExist , userAccepted)
         const  donor=response.data.donor.accountNo===accountAddress?true:false;
         console.log("the truth is here ",donor);
         setIsDonor(donor);
@@ -173,9 +185,14 @@ const AidOfferDetail = () => {
     <div className="container w-max-8 mx-auto mb-10 p-3 rounded shadow ">
       <div className="flex">
         <div className="flex-1 bg-gray-200 w-2/5 px-6 py-3 rounded border flex flex-col ">
-          {userExist && (
+          {userExist && accountType==="donee" &&(
             <h1 className=" text-black font-bold bg-slate-400 p-1 w-1/6  text-center rounded-md self-end ">
               Applied
+            </h1>
+          )}
+          {userAccepted && accountType==="donee" &&(
+            <h1 className=" text-black font-bold bg-slate-400 p-1 w-1/6  text-center rounded-md self-end ">
+              Accepted
             </h1>
           )}
           <div className="flex flex-row justify-between rounded-md mb-3 px-4 py-4  ">
@@ -217,7 +234,7 @@ const AidOfferDetail = () => {
 
           {accountType!=="donor" &&
             formData?.status === "open" &&
-            userExist === false && (
+            userExist === false  && userAccepted===false && (
               <form onSubmit={submitHandler}>
                 <div className=" mt-4 flex flex-col ">
                   <textarea

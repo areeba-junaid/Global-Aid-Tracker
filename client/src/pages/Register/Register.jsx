@@ -2,10 +2,6 @@ import { useState, useMemo, useContext } from "react";
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import "react-phone-number-input/style.css";
-/*import {
-  getCountries,
-  getCountryCallingCode,
-} from "react-phone-number-input/input";*/
 import PhoneInput from "react-phone-number-input";
 import { validateName, validateEmail, validatePhoneNumber } from "./Validation";
 import { useAuth } from "../../contextAPI/AuthContext";
@@ -14,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Authenticate() {
-  const { state, setToken } = useEthereum();
+  const { setToken } = useEthereum();
   const {
     setIsAuthenticated,
     setAccountType,
@@ -22,51 +18,46 @@ export default function Authenticate() {
     setCurrentToken,
     currentToken
   } = useAuth();
-  console.log("Reg address ",accountAddress);
-  console.log("state", state)
   const navigate = useNavigate();
-  // console.log(getCountries());
-
   const [fieldErrors, setFieldErrors] = useState({
     name: "",
     email: "",
     phone: "",
+    counry:"",
   });
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
-  // const [code, setCode] = useState("");
   const options = useMemo(() => countryList().getData(), []);
 
   const handleNameChange = (event) => {
     const newName = event.target.value;
+    console.log("The name Validation", validateName(newName));
     setFieldErrors({
       ...fieldErrors,
-      orgName: !validateName(newName) ? "Invalid organization name" : "",
+      name: !validateName(newName) ? "Invalid organization name" : "",
     });
   };
 
   const handleEmailChange = (event) => {
     const newEmail = event.target.value;
+    console.log("Email Validation",validateName(newEmail));
     setFieldErrors({
       ...fieldErrors,
       email: !validateEmail(newEmail) ? "Invalid Email" : "",
     });
+    console.log("Email", fieldErrors);
+   
   };
 
   const handlePhoneChange = () => {
-    console.log(phoneNumber);
-    console.log(validatePhoneNumber(phoneNumber));
     setFieldErrors({
       ...fieldErrors,
       phone: !validatePhoneNumber(phoneNumber) ? "Invalid phoneNumber" : "",
     });
   };
-
-  //Countriies list
+  
   const changeHandler = (selectedOption) => {
-    const countryCode = countryList().getValue(selectedOption.label);
     setSelectedCountry(selectedOption);
-    //setCode(countryCode);
   };
 
   const registerDb = async (body) => {
@@ -78,41 +69,42 @@ export default function Authenticate() {
             authorization: currentToken,
           },
         });
-  
-
       if (response.status === 201) {
         console.log("Registered Successfully");
         return 1;
-      } else if (response.status === 404) {
-        console.log(response.error);
-        return 0;
-      }
+      } 
+    
     } catch (err) {
-      console.error("Axios request failed:");
+      console.error("Axios request failed:", err.response.data.error);
+      alert(err.response.data.error);
       return 0;
     }
   };
   const registerUser = async (event) => {
     event.preventDefault();
+    if(selectedCountry===""){
+      alert("Please Select your Country");
+      return;
+    }
     if (
       fieldErrors.name !== "" ||
       fieldErrors.email !== "" ||
       fieldErrors.phone !== ""
     ) {
-      alert("Invalid input. Please fix the errors.");
+      alert("Invalid input. Please Enter correct Data");
       return;
     }
+    
     // Access the form element
     try {
       let form = event.target;
-      const user =form.userType.value;
       const body = {
         accountNo: accountAddress,
         name: form.orgName.value,
         email: form.email.value,
         country: selectedCountry.label,
         phone: phoneNumber,
-        userType: user === '1' ? "donor" : "donee",
+        userType: form.userType.value === '1' ? "donor" : "donee",
       }
      
         const resultDb = await registerDb(body);
@@ -132,7 +124,7 @@ export default function Authenticate() {
   return (
     <div className="h-screen w-screen min-h-screen bg-gray-200">
       <div className="p-2">
-        <h1 className="text-3xl  text-black  font-semibold">Global Aid</h1>
+        <h1 className="text-4xl  text-black  font-semibold">Global Aid</h1>
       </div>
       <form
         className="max-w-sm  m-auto flex flex-col  bg-white p-6 rounded shadow-md text-gray-600"
@@ -172,7 +164,6 @@ export default function Authenticate() {
         <Select
           className="block w-full p-1  rounded mb-4"
           options={options}
-          defaultValue={{ label: "Afghanistan", value: 0 }}//to correct
           value={selectedCountry}
           onChange={changeHandler}
         />
@@ -183,7 +174,9 @@ export default function Authenticate() {
           placeholder="Phone Number"
           className="border border-grey-light p-1 w-full   rounded mb-4"
           value={phoneNumber}
-          defaultCountry="AF"
+          required
+          withCountryCallingCode='+92'
+          international='true'
           onChange={setPhoneNumber}
           onBlur={handlePhoneChange}
         />
