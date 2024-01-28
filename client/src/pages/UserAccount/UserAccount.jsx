@@ -1,14 +1,15 @@
-//UserAccount Page
-// The final version with updations in UI (with both buttons) working/eiting/updating.
-// approved one
-
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../../contextAPI/AuthContext";
 import { getAccountInfo } from "../../utils/Token";
 import "tailwindcss/tailwind.css";
 import Select from "react-select";
 import countryList from "react-select-country-list";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
+import axios from "axios";
+
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -20,26 +21,52 @@ import {
 
 const UserAccount = () => {
   const [formData, setFormData] = useState({});
+  const [changeData, setChangeData] = useState({});
+  const [error, setError] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
-  const options = countryList().getData(); // Define the 'options' variable for countries
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const { currentToken } = useAuth();
+  const options = countryList().getData();
+  const updateAccount = async (body) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/account/update",
+        body,
+        {
+          headers: {
+            authorization: currentToken,
+          },
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+       
+        setFormData(response.data);
+        setChangeData(response.data); 
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (isEditMode) {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      }
+    } catch (err) {
+      console.error("Axios request failed", err);
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("You are Saving");
+    if (error) {
+      return;
+    }
+    console.log(formData);
+    const body = {
+      accountNo: formData.accountNo,
+      country: selectedCountry.label,
+      phone: phoneNumber,
+      name: changeData.name,
+      email: changeData.email,
+    };
 
     if (isEditMode) {
-      console.log("Updating data:", formData);
-      // Add logic to update data in the database
+      console.log(body);
+      updateAccount(body);
     }
 
     setIsEditMode(false);
@@ -47,16 +74,17 @@ const UserAccount = () => {
 
   const fetchAccountInfo = async () => {
     const result = await getAccountInfo();
+    console.log(result);
     setFormData(result);
-    //console.log(setFormData(result));
+    setChangeData(result);
+    setPhoneNumber(result.phone);
   };
   useEffect(() => {
     fetchAccountInfo();
   }, []);
- 
 
   return (
-    <div className="container max-w-3xl mx-auto mt-10 mb-10 p-8 text-left rounded shadow relative">
+    <div className="container max-w-3xl mx-auto mt-5 mb-2 p-8 text-left rounded shadow relative">
       <h1 className="text-gray-600 font-bold text-center text-3xl">
         {isEditMode
           ? "EDIT PERSONAL INFORMATION"
@@ -76,89 +104,134 @@ const UserAccount = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="sub-container flex bg-gray-200 border border-blue-300 rounded px-8 py-8 mb-8">
-          <div className="flex-1">
+        <div className="sub-container flex flex-row bg-gray-200 border border-blue-300 rounded px-8 py-8 mb-8">
+          <div className="flex-1 w-2/4">
             <label className="flex items-center mb-4">
               <span className="mr-2">
                 <FontAwesomeIcon icon={faUser} />
               </span>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                readOnly={!isEditMode}
-                maxLength="100"  // Set the maximum character limit to 100
-                pattern="[A-Za-z ]+"
-                title="Only alphabets and spaces are allowed."
-                className="field-input w-3/4 px-2 py-1 rounded"
-              />
+              {!isEditMode && (
+                <p className="p-1 bg-white  w-3/4 px-2 py-1 rounded ">
+                  {" "}
+                  {formData.name}{" "}
+                </p>
+              )}
+              {isEditMode && (
+                <input
+                  type="text"
+                  name="name"
+                  value={changeData.name}
+                  onChange={(e) =>
+                    setChangeData({
+                      ...changeData,
+                      name: e.target.value,
+                    })
+                  }
+                  required
+                  minLength="2"
+                  maxLength="30" // Set the maximum character limit to 100
+                  pattern="[A-Za-z ]+"
+                  title="Only alphabets and spaces are allowed."
+                  className="field-input w-3/4 px-2 py-1 rounded"
+                />
+              )}
             </label>
             <br />
             <label className="flex items-center mb-4">
               <span className="mr-2">
                 <FontAwesomeIcon icon={faEnvelope} />
               </span>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                readOnly={!isEditMode}
-                maxLength={50}
-                pattern="[A-Za-z][A-Za-z0-9.]*[A-Za-z0-9]@gmail\.com"
-                title="Enter a valid Gmail address."
-                className="field-input w-3/4 px-2 py-1 rounded"
-              />
+              {!isEditMode && (
+                <p className="p-1 bg-white  w-3/4 px-2 py-1 rounded ">
+                  {" "}
+                  {formData.email}{" "}
+                </p>
+              )}
+
+              {isEditMode && (
+                <input
+                  type="email"
+                  name="email"
+                  value={changeData.email}
+                  required
+                  maxLength={50}
+                  onChange={(e) =>
+                    setChangeData({
+                      ...changeData,
+                      email: e.target.value,
+                    })
+                  }
+                  pattern="[A-Za-z][A-Za-z0-9.]*[A-Za-z0-9]@gmail\.com"
+                  title="Enter a valid Gmail address."
+                  className="field-input w-3/4 px-2 py-1 rounded"
+                />
+              )}
             </label>
           </div>
 
-          <div className="flex-2">
-            <label className="flex items-center mb-4">
+          <div className="flex-2 w-2/4">
+            <label className="flex items-center mb-1">
               <span className="mr-2">
                 <FontAwesomeIcon icon={faGlobe} />
               </span>
-              <Select
-                name="country"
-                options={options} 
-                value={formData.country}
-                required
-                onChange={(selectedOption) =>
-                  setFormData({
-                    ...formData,
-                    country: selectedOption,
-                  })
-                }
-                isDisabled={!isEditMode}
-                className="field-input w-3/4 px-2 py-1 rounded"
-              />
+              {!isEditMode && (
+                <p className="p-2 bg-white  w-3/4 px-2 py-1 rounded ">
+                  {" "}
+                  {formData.country}{" "}
+                </p>
+              )}
+              {isEditMode && (
+                <Select
+                  name="country"
+                  options={options}
+                  value={selectedCountry}
+                  onChange={(selectedOption) =>
+                    setSelectedCountry(selectedOption)
+                  }
+                  required
+                  className="field-input w-3/4  rounded"
+                />
+              )}
             </label>
             <br />
             <label className="flex items-center mb-4">
-              <span className="mr-2">
-                <FontAwesomeIcon icon={faPhone} />
-              </span>
-              <PhoneInput
-                name="phone"
-                value={formData.phone}
-                onChange={(value) =>
-                  setFormData({
-                    ...formData,
-                    phone: value,
-                  })
-                }
-                required
-                readOnly={!isEditMode}
-                maxLength={13}
-                title="Please enter a valid 10-digit phone number"
-                className="field-input w-3/4 px-2 py-1 rounded"
-              />
+              {!isEditMode && (
+                <>
+                  <span className="mr-2">
+                    <FontAwesomeIcon icon={faPhone} />
+                  </span>
+                  <p className="p-1 bg-white  w-3/4 px-2 py-1 rounded ">
+                    {" "}
+                    {formData.phone}{" "}
+                  </p>
+                </>
+              )}
+              {isEditMode && (
+                <div>
+                  <PhoneInput
+                    className="border border-grey-light p-2 w-full rounded "
+                    value={phoneNumber}
+                    required
+                    withCountryCallingCode="+92"
+                    international={true}
+                    onChange={setPhoneNumber}
+                    onBlur={() =>
+                      isPossiblePhoneNumber(phoneNumber)
+                        ? setError(false)
+                        : setError(true)
+                    }
+                  />
+                  {error && (
+                    <span className="text-red-500 text-sm">
+                      Phone number is not valid.
+                    </span>
+                  )}
+                </div>
+              )}
             </label>
           </div>
         </div>
-        
+
         <div className="text-left">
           <button
             className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
@@ -166,20 +239,25 @@ const UserAccount = () => {
           >
             Save
           </button>
-    
-     
-        <button
-          className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
-          onClick={() => {
-          setIsEditMode(!isEditMode);
-          }}
-        >
-          {isEditMode ? "Cancel Edit" : "Edit"}
-        </button>
-      </div>
-      </form>
 
-      
+          <button
+            className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
+            onClick={(event) => {
+              event.preventDefault();
+              if (isEditMode) {
+                setChangeData(formData);
+                setSelectedCountry("");
+                setPhoneNumber(formData?.phone);
+                setError(false);
+              }
+              setIsEditMode(!isEditMode);
+              
+            }}
+          >
+            {isEditMode ? "Cancel Edit" : "Edit"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

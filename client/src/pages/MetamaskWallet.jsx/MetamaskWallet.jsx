@@ -15,7 +15,7 @@ export default function MetamaskWallet() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    sessionStorage.removeItem("token");
+    sessionStorage.clear()
     ethereum.on("accountsChanged", handleAccountsChanged);
     ethereum.on("chainChanged", handleChainChanged);
 

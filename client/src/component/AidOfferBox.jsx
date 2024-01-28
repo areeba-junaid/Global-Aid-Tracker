@@ -65,14 +65,14 @@ export default function AidOfferBox({ offer }) {
           </div>
 
           {/* Combined container for Donee AIDNAME, Country, and Phone Number with icons */}
-          <div className="rounded mt-4 flex justify-center items-center">
+         {offer.donor.name &&( <div className="rounded mt-4 flex justify-center items-center">
             <Person className="mr-1" />{" "}
             <p className="mr-6">{offer?.donor?.name}</p>
             <Public className="mx-1" />{" "}
             <p className="mx-">{offer?.donor?.country}</p>
             <Phone className="ml-10" />{" "}
             <p className="ml">{offer?.donor?.phone}</p>
-          </div>
+          </div>)}
         </div>
       </div>
     </div>

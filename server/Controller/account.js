@@ -37,6 +37,7 @@ const createAccount = async (req, res) => {
 const updateAccount = async (req, res) => {
   try {
     const { accountNo, name, email, country, phone } = req.body;
+    console.log("Hello");
     // Find the account by 'account' and update it
     const updatedAccount = await accountSchema.findOneAndUpdate(
       { accountNo }, // The filter to find the document to update
@@ -50,6 +51,7 @@ const updateAccount = async (req, res) => {
       },
       { new: true }
     );
+  
     if (!updatedAccount) {
       return res.status(404).json({ error: "Account not found" });
     }
