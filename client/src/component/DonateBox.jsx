@@ -6,8 +6,11 @@ import {
   Public,
   Phone,
 } from "@mui/icons-material";
-
-export default function DonateBox({offer }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
+export default function DonateBox({offer}) {
   const [showFullAidInfo, setShowFullAidInfo] = useState(false);
   const navigate = useNavigate();
 
@@ -20,11 +23,15 @@ export default function DonateBox({offer }) {
     <div className="w-3/4 flex flex-col justify-center items-center mx-auto hover:bg-slate-100 " onClick={()=>{navigate(`/aid-request-detail/${offer.tId}`);}}>
       <div className="border border-gray-500 rounded w-full max-w-md-40">
         <div
-          className="flex flex-row w-full text-3xl space-x-7 p-2"
+          className="flex flex-row justify-between w-full text-3xl space-x-7 p-2"
           style={{ backgroundColor: aidStyles[offer.aidType].color }}
         >
-          {aidStyles[offer.aidType].icon}
-          <h3 className="">{offer.aidName}</h3>
+          <h3 className="">
+          {aidStyles[offer.aidType].icon} {offer.aidName}
+            </h3>
+            <h2 className="text-xl ">
+              <FontAwesomeIcon icon={faClock} /> {offer.createdAt}
+            </h2>
         </div>
         <div className="p-4 font-semibold font-sans">
           <p>
@@ -42,13 +49,10 @@ export default function DonateBox({offer }) {
             </button>
           </p>
 
-          
-          <div className="bg-blue-200 p-4 rounded mt-4 flex justify-center items-center">
-            <p className="mr-20" style={{ fontSize: "20px" }}>Target: {offer.targetAmount}</p>
-            <p className="ml-20" style={{ fontSize: "20px" }}>Funded Amount: {offer.collectedAmount}</p>
+          <div className="bg-blue-200 p-4 rounded mt-4 flex justify-around items-center px-2">
+            <p className="text-xl" >Target: {offer.targetAmount}</p>
+            <p className="text-xl">Funded Amount: {offer.collectedAmount}</p>
           </div>
-       
-
 
           {/* Combined container for Donee Name, Country, and Phone Number with icons */}
          {offer.donee.name?(<div className="p-4 rounded mt-4 flex justify-center items-center">

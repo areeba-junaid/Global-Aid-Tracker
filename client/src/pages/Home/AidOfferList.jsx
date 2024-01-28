@@ -34,6 +34,7 @@ function AidOfferList() {
 
         if (response.status === 200) {
           if (aidFormFilter === "fund") {
+            response.data.reverse();
             setFundOffers(response.data);
           // Clear asset offers
           } else {
@@ -52,7 +53,7 @@ function AidOfferList() {
 
   const startIndex = currentPage * itemsPerRow * maxRows;
   const endIndex = startIndex + itemsPerRow * maxRows;
-  const Offer = aidFormFilter === "fund" ? fundOffers : assetOffers;
+  let Offer = aidFormFilter === "fund" ? fundOffers : assetOffers;
   const displayedOffers = Offer.slice(startIndex, endIndex);
 
   const handleNextPage = () => {

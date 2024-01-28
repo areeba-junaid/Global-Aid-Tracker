@@ -35,6 +35,7 @@ const UserAccount = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    alert("You are Saving");
 
     if (isEditMode) {
       console.log("Updating data:", formData);
@@ -157,7 +158,7 @@ const UserAccount = () => {
             </label>
           </div>
         </div>
-
+        
         <div className="text-left">
           <button
             className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
@@ -165,10 +166,8 @@ const UserAccount = () => {
           >
             Save
           </button>
-        </div>
-      </form>
-
-      <div className="text-right">
+    
+     
         <button
           className="save-btn bg-blue-500 rounded shadow text-white p-1 px-4 m-1"
           onClick={() => {
@@ -178,6 +177,9 @@ const UserAccount = () => {
           {isEditMode ? "Cancel Edit" : "Edit"}
         </button>
       </div>
+      </form>
+
+      
     </div>
   );
 };

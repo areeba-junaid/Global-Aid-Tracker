@@ -34,12 +34,13 @@ function DonationList() {
 
         if (response.status === 200) {
           if (aidFormFilter === "fund") {
+            response.data.reverse();
             setFundOffers(response.data);
             console.log(response.data)
-          // Clear asset offers
+         
           } else {
             setAssetOffers(response.data);
-            // Clear fund offers
+        
           }
         }
       } catch (error) {

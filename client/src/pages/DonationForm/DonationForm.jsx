@@ -21,16 +21,12 @@ const DonationForm = () => {
 
     if (selectedOption === "fund") {
       let amount=parseFloat(event.target["amount"].value);
-      let limit = parseInt(event.target["limit"].value);
+     
       if (amount <=0 ){
         alert("Amount should be greater than 0");
         return
       }
-  
-      if(limit <=0 ){
-        alert ("Offer Open To should be greater than 0");
-        return
-      }
+
       if (accountType === "donee") {
         
         body = {
@@ -38,6 +34,11 @@ const DonationForm = () => {
           amount: amount,
         };
       } else if (accountType === "donor") {
+        let limit = parseInt(event.target["limit"].value);
+        if(limit <=0 ){
+          alert ("Offer Open To should be greater than 0");
+          return
+        }
         body = {
           ...body,
           amount: amount,
@@ -201,7 +202,7 @@ const DonationForm = () => {
 
         <input
           type="submit"
-          className="bg-white text-black px-9 py-2 rounded-lg text-base font-semibold hover:bg-green-500 hover:text-white transition duration-300 mt-8 mb-4"
+          className="bg-green-500 text-white px-9 py-2 rounded-lg text-base font-semibold hover:bg-green-600 hover:text-white transition duration-300 mt-8 mb-4"
          
         />
       </form>

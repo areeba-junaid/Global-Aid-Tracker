@@ -32,6 +32,7 @@ function AidOfferList() {
         });
 
         if (response.status === 200) {
+          response.data.reverse();
           if (aidFormFilter === "accept") {
             setAcceptOffers(response.data);
             console.log(response.data);

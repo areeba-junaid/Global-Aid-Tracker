@@ -19,7 +19,7 @@ import {
   faPerson,
 } from "@fortawesome/free-solid-svg-icons";
 
-const AidOfferDetail = () => {
+const AidOfferDetail = () => { 
   const [formData, setFormData] = useState({});
   const { tId } = useParams();
   const { currentToken, accountAddress,accountType } = useAuth();
@@ -105,7 +105,15 @@ const AidOfferDetail = () => {
   };
 
   const handleAcceptRequest =async  (original) => {
-    console.log("Accept the request", original);
+    let accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const account = ethers.utils.getAddress(accounts[0]);
+    if(accountAddress!==account)
+    {
+       alert("Please do Transaction with your Valid Account");
+       return;
+    }
     const body = {
       tId: tId,
       donee: original.accountAddress,
@@ -205,8 +213,9 @@ const AidOfferDetail = () => {
               {formData?.createdAt}
             </h2>
           </div>
-
-          <div className=" bg-white rounded-md px-4 py-4 mb-5">
+          
+          <div className="bg-white">
+          <div className=" rounded-md px-4 py-4 mb-5">
             <p className="p-1 mb-5">
               <strong className="text-2xl ">Aid Information: </strong>
               {formData?.aidInfo}
@@ -220,7 +229,7 @@ const AidOfferDetail = () => {
             </h2>
           </div>
 
-          <div className="bg-white rounded flex flex-row justify-around p-3">
+          <div className=" rounded flex flex-row justify-around p-3">
             <h1>
               <strong>Aid Type:</strong> {formData?.aidType}
             </h1>
@@ -228,21 +237,20 @@ const AidOfferDetail = () => {
               <strong>Aid Category:</strong> Fund
             </h1>
             <h1>
-              <strong>Aid Type:</strong> {formData[0]?.status}
+              <strong>Aid Type:</strong> {formData?.status}
             </h1>
           </div>
-
+          </div >
           {accountType!=="donor" &&
             formData?.status === "open" &&
             userExist === false  && userAccepted===false && (
               <form onSubmit={submitHandler}>
-                <div className=" mt-4 flex flex-col ">
+                <div className=" mt-4 flex flex-col  ">
                   <textarea
                     id="proposal"
                     placeholder="Write proposal to Apply"
-                    className="p-4"
-                    minLength="100"
-                    maxLength="150"
+                    className="p-4  border-gray-500 border-2"
+                    maxLength="110"
                     required
                   />
                   <button

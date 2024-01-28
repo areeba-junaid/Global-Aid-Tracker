@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import aidStyles from "../utils/aidStyles";
 import { useNavigate } from "react-router-dom";
 import { Person, Public, Phone } from "@mui/icons-material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function AidOfferBox({ offer }) {
-  const [showFullAIDINFO, setShowFullAIDINFO] = useState(false);
+  const [showFullAidInfo, setShowFullAidInfo] = useState(false);
+
   const navigate = useNavigate();
   const toggleAIDINFO = () => {
-    setShowFullAIDINFO(!showFullAIDINFO);
+    setShowFullAidInfo(!showFullAidInfo);
   };
 
-  return (
+  return ( 
     <div
       className="w-3/4 flex flex-col justify-center items-center mx-auto hover:bg-slate-100 "
       onClick={() => {
@@ -19,17 +24,21 @@ export default function AidOfferBox({ offer }) {
     >
       <div className="border border-gray-500 rounded w-full max-w-md-40">
         <div
-          className="flex flex-row w-full text-3xl space-x-7 p-2"
+          className="flex flex-row justify-between w-full text-3xl space-x-7 p-2"
           style={{ backgroundColor: aidStyles[offer.aidType].color }}
         >
-          {aidStyles[offer.aidType].icon}
-          <h3 className="">{offer.aidName}</h3>
+          <h3 className="">
+          {aidStyles[offer.aidType].icon} {offer.aidName}
+            </h3>
+            <h2 className="text-xl ">
+              <FontAwesomeIcon icon={faClock} /> {offer.createdAt}
+            </h2>
         </div>
         <div className="p-4 font-semibold font-sans">
           <p>
             {" "}
             <span className="text-black-500">
-              {showFullAIDINFO
+              {showFullAidInfo
                 ? offer.aidInfo
                 : `${offer.aidInfo.substring(0, 85)}...`}
             </span>{" "}
@@ -37,7 +46,7 @@ export default function AidOfferBox({ offer }) {
               className="text-white bg-blue-500 px-4 py-2 rounded-md ml-2 text-sm"
               onClick={toggleAIDINFO}
             >
-              {showFullAIDINFO ? "Less" : "More"}
+              {showFullAidInfo ? "Less" : "More"}
             </button>
           </p>
 

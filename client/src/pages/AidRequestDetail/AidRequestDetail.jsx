@@ -22,21 +22,41 @@ const AidRequestDetail = () => {
   const [formData, setFormData] = useState({});
   const { tId } = useParams();
   const [total,setTotal]=useState(null);
-  const { currentToken, accountAddress } = useAuth();
+  const [donated,setdonated]=useState(null);
+  const { currentToken, accountAddress,accountType } = useAuth();
   const { state } = useEthereum();
   const [record, setRecord] = useState([]);
      const readTotal=async()=>{
      try{ 
       const total=await state.contractRead.getCollectedFundInfo(tId);
+      console.log(total);
       const totalEthers = ethers.utils.formatEther(total.toNumber());
       setTotal(totalEthers);}
       catch(error){
-        console.log("error reading total amount");
+        console.log("error reading total amount", error);
       }
     }
+    const donorTotal = () => {
+      try {
+        const totalWei = record.reduce((acc, item) => {
+          if (item.donor === accountAddress) {
+            return BigInt(item.amount * 1e18) + acc;
+          } else {
+            return acc;
+          }
+        }, BigInt(0));
+    
+        const totalEther = parseFloat(totalWei) / 1e18;
+        setdonated(totalEther);
+        console.log("Total Donation for Donor: ", totalEther);
+      } catch (error) {
+        console.error("Error calculating donor total:", error);
+      }
+    };
+    
     const updateFund = async () => {
       try {
-        const  body={ tId, collectedAmount:  0.00001};
+        const  body={ tId, collectedAmount:total};
         const response = await axios.post(
           "http://localhost:5000/api/aidRequst/update-fund",
             body,
@@ -92,6 +112,7 @@ const AidRequestDetail = () => {
         console.log("User Transaction",userTransaction);
         const latestTransaction = userTransaction.reverse();
         setRecord(latestTransaction);
+   
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -115,12 +136,9 @@ const AidRequestDetail = () => {
       const receipt = await tx.wait();
       if (receipt.status === 1) {
         fetchTransactions();
-        return 1;
-      } else {
-        alert("Transaction Failed due to Error");
-        console.error("Transaction failed or was reverted");
-        return null;
-      }
+        readTotal();
+      } 
+      
     } catch (error) {
       console.error("Error sending donation:", error);
       if (error.code === -32000) {
@@ -128,14 +146,24 @@ const AidRequestDetail = () => {
         alert("Insufficient Funds in your MetaMask wallet.");
       } else {
       
-        alert("An error occurred while processing your donation.");
+        alert("Transaction is cancelled due to Error");
       }
       return null;
     }
   };
 
   const handleSendButton = async (e) => {
+    e.preventDefault();
     try {
+      let accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const account = ethers.utils.getAddress(accounts[0]);
+      if(accountAddress!==account)
+      {
+         alert("Please do Transaction with your Valid Account");
+         return;
+      }
       if (!formData) {
         alert("Aid Request Does not Exist ");
         return;
@@ -145,12 +173,7 @@ const AidRequestDetail = () => {
         alert(" Please Enter Valid Number");
         return;
       }
-        const Data = await donateEthers(amountInput);
-         if (Data ===1) {
-         await readTotal();
-        updateFund();
-
-     }
+       await donateEthers(amountInput);
     } catch (error) {
       console.error("Error sending donation:", error);
     
@@ -181,8 +204,20 @@ const AidRequestDetail = () => {
     fetchData();
     fetchTransactions();
     readTotal();
+   
     console.log(record);
   }, [tId, state]);
+
+  useEffect(() => {
+    console.log(total);
+    updateFund();
+ 
+  }, [total]);
+
+  useEffect(() => {
+    
+    donorTotal();
+  }, [record]);
 
   return (
     <div className="container w-max-8 mx-auto mb-10 p-3 rounded shadow ">
@@ -192,12 +227,12 @@ const AidRequestDetail = () => {
             <h2 className="text-4xl">
               {aidStyles[formData.aidType]?.icon} {formData.aidName}
             </h2>
-            <h2 className="text-2xl ">
-              <FontAwesomeIcon icon={faClock} />{formData.createdAt}
+            <h2 className="text-xl ">
+              <FontAwesomeIcon icon={faClock} /> {formData.createdAt}
             </h2>
           </div>
-
-          <div className=" bg-white rounded-md px-4 py-4 mb-5">
+           <div className="bg-white">
+          <div className=" rounded-md px-4 py-4 mb-2">
             <p className="p-1 mb-5">
               <strong className="text-2xl ">Aid Information: </strong>
               {formData.aidInfo}
@@ -207,11 +242,11 @@ const AidRequestDetail = () => {
               <strong>Funds Required:</strong> {formData.targetAmount} ethers{" "}
             </h2>
             <h2>
-              <strong>Funds Collected:</strong> {total>0? total :0 } ethers{" "}
+              <strong>Funds Collected:</strong> {total? total :0 } ethers{" "}
             </h2>
           </div>
 
-          <div className="bg-white rounded flex flex-row justify-around p-3">
+          <div className="flex flex-row justify-around p-3">
             <h1>
               <strong>Aid Type:</strong> {formData.aidType}
             </h1>
@@ -223,24 +258,35 @@ const AidRequestDetail = () => {
             </h1>
           </div>
 
-          {formData.donee && formData.donee.accountNo != accountAddress && formData.status==="open"? (
-            <div className=" mt-4 flex flex-col ">
+          {donated!=null && accountType==='donor' && (<div className="flex flex-row justify-around p-3 font-bold bg-blue-500">
+            <h1>
+              You Donated:  {donated} ethers
+            </h1>
+           
+          </div>)}
+          </div>
+
+          {formData?.status==="open"&& accountType==='donor' && (
+            <form className=" mt-4 flex flex-col " onSubmit={handleSendButton}>
               <input
                 id="etherAmount"
                 className="rounded shadow self-center text-black p-2 w-4/12 mt-5 [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                 type="number"
+                step="0.000001"
+                required
                 placeholder="Enter amount in Ethers"
               />
               <button
                 className="bg-green-700  hover:bg-green-600 rounded shadow self-center text-white p-2 w-4/12 mt-5"
                 type="submit"
-                onClick={handleSendButton}
+                
               >
                 Send Donation
               </button>
-            </div>
-          ) : (
-            <p className="m-auto font-bold text-green-600 text-xl">Congratulations Target Amount has bee collected , Thanks to all Donors!!!</p>
+            </form>
+          )}
+          {formData?.status==='closed' && (
+            <p  className="m-auto font-bold text-green-600 text-xl">Congratulations Target Amount has bee collected , Thanks to all Donors!!!</p>
           )}
         </div>
 

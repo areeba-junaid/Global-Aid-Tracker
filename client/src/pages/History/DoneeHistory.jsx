@@ -22,7 +22,7 @@ export default function DonorHistory() {
           }`}
           onClick={() => handlePageChange("launchedproposals")}
         >
-          Launched Proposals
+          Launched Aid Request
         </button>
         <button
           className={`px-10 py-2 mx-2 ${

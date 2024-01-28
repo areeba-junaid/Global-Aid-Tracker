@@ -34,6 +34,7 @@ function LaunchedProposals() {
         });
 
         if (response.status === 200) {
+          response.data.reverse();
           if (aidFormFilter === "fund") {
             setFundOffers(response.data);
             console.log(response.data);

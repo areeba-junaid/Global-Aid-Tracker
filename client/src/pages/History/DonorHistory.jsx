@@ -32,7 +32,7 @@ export default function DonorHistory() {
           }`}
           onClick={() => handlePageChange("acceptedProposals")}
         >
-          Accepted Proposals
+          Accepted Aid Request
         </button>
       </div>
 
