@@ -3,7 +3,14 @@ import ReactTable from 'react-table-6';
 import 'react-table-6/react-table.css';
 
 const ListOfDonees = ({ requestedBy, handleAcceptRequest, isDonor }) => {
-   console.log("Is donor", isDonor)
+
+  const data = requestedBy?.map((item) => ({
+    doneeName: item.donee.name,
+    proposal: item.proposal,
+    accountAddress: item.donee.accountNo,
+    acceptButton: 'Accept',
+  }));
+  
   let columns = [
     {
       Header: <div style={{ textAlign: 'center', fontWeight: 'bold' }}>Donee Name</div>,
@@ -26,7 +33,7 @@ const ListOfDonees = ({ requestedBy, handleAcceptRequest, isDonor }) => {
     },
   ];
 
-  // Add the "Accept Request" button column conditionally based on isDonor
+  
   if (isDonor) {
     columns = [
       ...columns,
@@ -48,15 +55,7 @@ const ListOfDonees = ({ requestedBy, handleAcceptRequest, isDonor }) => {
     ];
   }
 
-  const data = requestedBy?.map((item) => ({
-    doneeName: item.donee.name,
-    proposal: item.proposal,
-    accountAddress: item.donee.accountNo,
-    acceptButton: 'Accept',
-  }));
-  const pageSizeOptions = data?.length < 10 ? [data?.length] : [5, 8, 10];
-  const defaultPageSize = data?.length < 10 ? data?.length : 5;
-
+  
   return (
     <div>
       <div className="sub-container bg-blue-300 rounded p-3 mt-4">
@@ -67,8 +66,8 @@ const ListOfDonees = ({ requestedBy, handleAcceptRequest, isDonor }) => {
         <ReactTable
           data={data}
           columns={columns}
-          defaultPageSize={defaultPageSize}
-          pageSizeOptions={pageSizeOptions}
+          defaultPageSize={3}
+          pageSizeOptions={[3,5]}
         />
       ) : (
         <p className="w-full text-center font-semibold p-1">No Request To show</p>

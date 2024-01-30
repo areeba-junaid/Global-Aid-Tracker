@@ -218,7 +218,7 @@ function AcceptedProposals() {
 
         {Offer?.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-2xl font-bold mb-7">No Fund Offers To Show</p>
+            <p className="text-2xl font-bold mb-7">No Accepted Aid Request To Show</p>
           </div>
         ) : null}
       </div>

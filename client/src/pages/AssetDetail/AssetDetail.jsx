@@ -53,11 +53,11 @@ const AidRequestDetail = () => {
     <div className="container w-max-8 mx-auto mb-10 p-3 rounded shadow ">
       <div className="flex">
         <div className="flex-1 bg-gray-200 w-2/5 px-6 py-3 rounded border flex flex-col ">
-          <div className="flex flex-row justify-between rounded-md mb-3 px-4 py-4  ">
-            <h2 className="text-4xl">
+          <div className="flex flex-row justify-between items-baseline rounded-md mb-3 px-4 py-4  ">
+            <h2 className="text-3xl">
               {aidStyles[formData.aidType]?.icon} {formData.aidName}
             </h2>
-            <h2 className="text-2xl ">
+            <h2 className="text-sm ">
               <FontAwesomeIcon icon={faClock} /> 12/08/23 04:25 PM
             </h2>
           </div>

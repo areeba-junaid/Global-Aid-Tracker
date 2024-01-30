@@ -151,7 +151,7 @@ function LaunchedProposals() {
           </label>
         </div>
 
-        {/* Funded Filter Radio Buttons */}
+        {aidFormFilter === "fund" && (
         <div className="mb-4">
           <label className="text-lg font-bold mr-4">Status:</label>
           <label className="text-lg mr-2">
@@ -176,7 +176,7 @@ function LaunchedProposals() {
             />
             Close
           </label>
-        </div>
+        </div>)}
 
         {aidFormFilter === "fund" && (
           <div className="mb-4">
@@ -227,12 +227,12 @@ function LaunchedProposals() {
         )}
         {aidFormFilter === "fund" && Offer.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-2xl font-bold mb-7">No Fund Offers To Show</p>
+            <p className="text-2xl font-bold mb-7">No Launched Fund Request to Show</p>
           </div>
         ) : null}
         {aidFormFilter === "asset" && Offer.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-2xl font-bold mb-7">No Asset Offers To Show</p>
+            <p className="text-2xl font-bold mb-7">No Launched Asset Request to Show</p>
           </div>
         ) : null}
       </div>

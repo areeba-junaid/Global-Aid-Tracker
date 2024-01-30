@@ -48,6 +48,7 @@ const UserAccount = () => {
       }
     } catch (err) {
       console.error("Axios request failed", err);
+      alert(err.response.data.error);
     }
   };
   const handleSubmit = (e) => {

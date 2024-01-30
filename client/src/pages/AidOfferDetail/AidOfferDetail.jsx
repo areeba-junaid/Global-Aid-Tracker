@@ -203,11 +203,11 @@ const AidOfferDetail = () => {
               Accepted
             </h1>
           )}
-          <div className="flex flex-row justify-between rounded-md mb-3 px-4 py-4  ">
-            <h2 className="text-4xl">
+          <div className="flex flex-row justify-between items-baseline rounded-md mb-3 px-4 py-4  ">
+            <h2 className="text-3xl">
               {aidStyles[formData?.aidType]?.icon} {formData?.aidName}
             </h2>
-            <h2 className="text-2xl ">
+            <h2 className="text-sm ">
               <FontAwesomeIcon icon={faClock} />
               {"  "}
               {formData?.createdAt}

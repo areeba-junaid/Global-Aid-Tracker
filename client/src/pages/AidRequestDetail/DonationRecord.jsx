@@ -20,7 +20,7 @@ const DonationRecord = ({ record }) => {
       Cell: ({ value }) => <div style={{ textAlign: 'center' }}>{value}</div>,
     },
   ];
-  const pageSizeOptions = record?.length < 10 ? [record?.length] : [5, 8, 10];
+  const pageSizeOptions = record?.length < 10 ? [record?.length] : [3,5];
   const defaultPageSize = record?.length < 10 ? record?.length : 5;
   return (
     <div>
@@ -33,10 +33,10 @@ const DonationRecord = ({ record }) => {
           data={record}
           columns={columns}
           defaultPageSize={defaultPageSize}
-          pageSizeOptions={ pageSizeOptions}
+          pageSizeOptions={pageSizeOptions} 
         />
       ):(<p className="w-full text-center font-semibold p-1">
-      No Request To show
+      No Donation Record To Show
     </p>)}
     </div>
   );

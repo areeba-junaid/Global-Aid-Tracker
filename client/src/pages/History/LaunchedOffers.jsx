@@ -127,7 +127,7 @@ function LaunchedOffers() {
           </button>
         </div>
 
-        {/* Aid Form Filter Radio Buttons */}
+      
         <div className="mb-4">
           <label className="text-lg font-bold mr-4">Type:</label>
           <label className="text-lg mr-2">
@@ -154,7 +154,7 @@ function LaunchedOffers() {
           </label>
         </div>
 
-        {/* Funded Filter Radio Buttons */}
+        {aidFormFilter === "fund" && (
         <div className="mb-4">
           <label className="text-lg font-bold mr-4">Status:</label>
           <label className="text-lg mr-2">
@@ -179,7 +179,7 @@ function LaunchedOffers() {
             />
             Close
           </label>
-        </div>
+        </div>)}
 
         {aidFormFilter === "fund" && (
           <div className="mb-4">

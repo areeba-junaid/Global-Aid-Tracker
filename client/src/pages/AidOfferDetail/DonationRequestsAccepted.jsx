@@ -36,8 +36,7 @@ const DonationRequestsAccepted = ({ acceptedDonee, amount }) => {
     amount: amount,
     accountAddress: item.donee.accountNo,
   }));
-  const pageSizeOptions = data?.length < 10 ? [data?.length] : [5, 8, 10];
-  const defaultPageSize = data?.length < 10 ? data?.length : 5;
+ 
   return (
     <div>
       <div className="sub-container bg-blue-300 rounded p-3 mt-4">
@@ -50,12 +49,12 @@ const DonationRequestsAccepted = ({ acceptedDonee, amount }) => {
         <ReactTable
           data={data}
           columns={columns}
-          defaultPageSize={defaultPageSize}
-          pageSizeOptions={pageSizeOptions}
+          defaultPageSize={3}
+          pageSizeOptions={[3,5]}
         />
       ) : (
         <p className="w-full text-center font-semibold p-1">
-          No Request To show
+          No Accepted  To show
         </p>
       )}
     </div>

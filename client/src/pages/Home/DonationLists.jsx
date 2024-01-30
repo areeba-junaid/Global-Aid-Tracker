@@ -33,8 +33,8 @@ function DonationList() {
         });
 
         if (response.status === 200) {
+          response.data.reverse();
           if (aidFormFilter === "fund") {
-            response.data.reverse();
             setFundOffers(response.data);
             console.log(response.data)
          

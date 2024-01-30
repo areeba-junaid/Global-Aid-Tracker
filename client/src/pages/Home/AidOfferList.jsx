@@ -33,8 +33,8 @@ function AidOfferList() {
         });
 
         if (response.status === 200) {
+          response.data.reverse();
           if (aidFormFilter === "fund") {
-            response.data.reverse();
             setFundOffers(response.data);
           // Clear asset offers
           } else {

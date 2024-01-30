@@ -46,7 +46,8 @@ const DonationForm = () => {
         };
       }
     }
-
+    event.target.reset();
+    setSelectedOption("fund")
     const apiUrl =
       selectedOption === "asset"
         ? "http://localhost:5000/api/assetOffer/create"
@@ -62,16 +63,14 @@ const DonationForm = () => {
       });
       if ((response.status===200 || response.status===201) && accountType==="donee")
       {
-             alert("Your Aid Request Has been Launched");
+             alert("Thankyou For Launching Aid Request");
       }
       else if((response.status===200 || response.status===201) && accountType==="donor"){
-             alert("Your Aid Offer Has been Launched");
+             alert("Thankyou For Launching Aid Offer");
       }
-
-      // Handle response as needed
-      console.log(response.data);
+     
     } catch (error) {
-      // Handle error
+      
       console.error("Error:", response , error.message);
     }
   };
@@ -93,7 +92,7 @@ const DonationForm = () => {
           type="text"
           id="dr-name"
           name="dr-name"
-          maxLength="30"  
+          maxLength="40"  
           pattern="[a-zA-Z0-9 ]+"
           title="Only alphabets, spaces, and numbers are allowed."
           required

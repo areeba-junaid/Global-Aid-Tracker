@@ -8,7 +8,7 @@ import {
   import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 const aidStyles = {
     health: {
-      color: "#B2BEB5",
+      color: "#6495ED",
       icon: <LocalHospital  />,
     },
     education: {
@@ -20,15 +20,15 @@ const aidStyles = {
       icon: <GppMaybe />,
     },
     food: {
-      color: "#D3D3D3",
+      color: "#9CACFF",
       icon: <Restaurant />,
     },
     technology: {
-      color: "#D3D3D3",
+      color: "#9DBFDC",
       icon: <Language />,
     },
     other: {
-      color: "#FF7E1",
+      color: "#E0F0FE",
       icon: <CardGiftcardIcon/>,
     },
   };

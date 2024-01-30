@@ -14,7 +14,7 @@ const createAccount = async (req, res) => {
       $or: [{ accountNo }, { email }, {phone}],
     });
     if (userAccount.length != 0) {
-      return res.status(401).json({ error: "User already Registered" });
+      return res.status(401).json({ error: "User Aready Registered with your given data" });
       
     }
     const newAccount = new accountSchema({
@@ -38,9 +38,16 @@ const updateAccount = async (req, res) => {
   try {
     const { accountNo, name, email, country, phone } = req.body;
     console.log("Hello");
-    // Find the account by 'account' and update it
+    userAccount = await accountSchema.find({
+      $or: [ { email }, {phone}],
+      $and:[{ accountNo: { $ne: accountNo } }]
+    });
+    if (userAccount.length != 0) {
+      return res.status(401).json({ error: "User Aready Registered with your given data" });
+      
+    }
     const updatedAccount = await accountSchema.findOneAndUpdate(
-      { accountNo }, // The filter to find the document to update
+      { accountNo }, 
       {
         $set: {
           name,
